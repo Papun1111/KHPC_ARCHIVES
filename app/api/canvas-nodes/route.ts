@@ -30,26 +30,42 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Upsert each node
+    // Upsert each node manually since imageId is not @unique in the schema
     const results = await Promise.all(
       body.nodes.map(
-        (node: { imageId: string; x: number; y: number; scale?: number; edges?: string[] }) =>
-          prisma.canvasNode.upsert({
+        async (node: { imageId: string; x: number; y: number; scale?: number; edges?: string[] }) => {
+          // The schema expects a String for edges, so we stringify the array
+          const stringifiedEdges = JSON.stringify(node.edges ?? []);
+
+          // Check if the node already exists for this imageId
+          const existingNode = await prisma.canvasNode.findFirst({
             where: { imageId: node.imageId },
-            update: {
-              x: node.x,
-              y: node.y,
-              scale: node.scale ?? 1,
-              edges: node.edges ?? [],
-            },
-            create: {
-              imageId: node.imageId,
-              x: node.x,
-              y: node.y,
-              scale: node.scale ?? 1,
-              edges: node.edges ?? [],
-            },
-          })
+          });
+
+          if (existingNode) {
+            // Update existing node using its unique 'id'
+            return prisma.canvasNode.update({
+              where: { id: existingNode.id },
+              data: {
+                x: node.x,
+                y: node.y,
+                scale: node.scale ?? 1,
+                edges: stringifiedEdges,
+              },
+            });
+          } else {
+            // Create a new node
+            return prisma.canvasNode.create({
+              data: {
+                imageId: node.imageId,
+                x: node.x,
+                y: node.y,
+                scale: node.scale ?? 1,
+                edges: stringifiedEdges,
+              },
+            });
+          }
+        }
       )
     );
 
