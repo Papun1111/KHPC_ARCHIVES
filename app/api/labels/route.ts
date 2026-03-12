@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
       data: {
         name: body.name,
         color: body.color || "#d4a843",
-        icon: body.icon || "survey",
       },
     });
 
