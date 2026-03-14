@@ -6,7 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { MangaGallery } from "@/components/MangaGallery";
 import { MasonryGallery } from "@/components/MasonryGallery";
 import { UploadZone } from "@/components/UploadZone";
-import { DEMO_IMAGES, INSIGNIA_CONFIG, type InsigniaType } from "@/lib/constants";
+import { INSIGNIA_CONFIG, type InsigniaType } from "@/lib/constants";
 import type { ImageData } from "@/components/ImageCard";
 
 // ─── Initial Load Cinematic Animation ───────────────────────────────────
