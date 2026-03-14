@@ -14,57 +14,41 @@ function CoordinateNodeComponent({ selected }: NodeProps<CoordinateNodeType>) {
       animate={{ scale: selected ? 1.05 : 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      {/* Outer jagged frame */}
+      {/* Outer glowing halo */}
       <div
-        className="absolute w-[220px] h-[220px] border border-black transition-all duration-500 group-hover:border-[#8a0303] group-hover:rotate-45"
+        className="absolute w-[240px] h-[240px] rounded-full transition-all duration-700 opacity-50 group-hover:opacity-100 group-hover:scale-110 pointer-events-none"
         style={{
-          background: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 11px)",
+          background: "radial-gradient(circle, rgba(255,238,221,0.2) 0%, rgba(255,238,221,0) 70%)",
+          filter: "blur(20px)"
         }}
       />
       
-      {/* Inner geometric core */}
-      <div className="relative flex h-[140px] w-[140px] flex-col items-center justify-center bg-white sharp-border shadow-2xl transition-colors duration-300 z-10">
+      {/* Inner glowing core */}
+      <div className="relative flex h-[160px] w-[160px] flex-col items-center justify-center bg-[#050510] border-2 border-[#ffeedd]/80 rounded-full shadow-[0_0_30px_rgba(255,238,221,0.6)] transition-all duration-300 group-hover:shadow-[0_0_50px_rgba(255,238,221,1)] z-10">
         
-        {/* Grey noise and Red Corner */}
-        <div className="absolute top-0 right-0 w-8 h-8 bg-[#8a0303] z-0 transition-transform duration-300 group-hover:scale-150 origin-top-right" />
+        {/* Core light */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-t from-[#ffeedd]/30 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-20 z-0"
-          style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
-          }}
-        />
-
         {/* Text Area */}
-        <div className="relative z-10 flex flex-col items-center">
+        <div className="relative z-10 flex flex-col items-center mt-2">
           <div
-            className="text-4xl font-black mb-2 transition-colors group-hover:text-white group-hover:drop-shadow-md"
-            style={{ color: "#000", fontFamily: "var(--font-cinzel)" }}
+            className="text-6xl font-black mb-1 transition-all group-hover:text-white group-hover:scale-110 drop-shadow-[0_0_10px_rgba(255,238,221,0.8)]"
+            style={{ color: "#ffeedd", fontFamily: "var(--font-cinzel)" }}
           >
-            ◉
+            ✧
           </div>
           <span
-            className="text-[10px] font-black uppercase tracking-[0.25em] text-black group-hover:text-white transition-colors"
+            className="text-[11px] font-black uppercase tracking-[0.3em] text-[#ffeedd] group-hover:text-white transition-colors drop-shadow-md mt-1"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             Coordinate
           </span>
-          <div className="mt-2 h-[1px] w-12 bg-black group-hover:bg-white transition-colors" />
         </div>
       </div>
 
-      {/* Hidden Connection points */}
-      {[Position.Top, Position.Right, Position.Bottom, Position.Left].map(
-        (pos) => (
-          <Handle
-            key={pos}
-            type="source"
-            position={pos}
-            id={pos}
-            className="opacity-0"
-          />
-        )
-      )}
+      {/* Connection points */}
+      <Handle type="target" position={Position.Bottom} className="opacity-0" />
+      <Handle type="source" position={Position.Top} className="opacity-0" />
     </motion.div>
   );
 }

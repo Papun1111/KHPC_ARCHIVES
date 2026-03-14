@@ -91,12 +91,12 @@ function CinematicLoader({ onComplete }: { onComplete: () => void }) {
         transition={{ duration: 3, ease: "easeOut" }}
       >
         <h1 
-          className="text-7xl md:text-9xl font-black text-black tracking-tighter mix-blend-overlay"
+          className="text-[clamp(2.5rem,8vw,6rem)] font-black text-black tracking-tighter mix-blend-overlay"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
           KHPC アーカイブ
         </h1>
-        <p className="mt-4 text-sm md:text-lg tracking-[0.4em] text-black font-bold uppercase mix-blend-overlay">
+        <p className="mt-2 md:mt-4 text-[10px] sm:text-xs md:text-lg tracking-[0.4em] text-black font-bold uppercase mix-blend-overlay">
           KHPC Archives
         </p>
       </motion.div>
@@ -107,13 +107,7 @@ function CinematicLoader({ onComplete }: { onComplete: () => void }) {
 // ─── Gallery Page ───────────────────────────────────────────────────────
 
 export default function GalleryPage() {
-  // Use extended DEMO_IMAGES with events to populate initial state
-  const [images, setImages] = useState<ImageData[]>(() => {
-    return DEMO_IMAGES.map((img, i) => ({
-      ...img,
-      eventName: i < 5 ? "Shiganshina Fall" : "Return to Shiganshina",
-    }));
-  });
+  const [images, setImages] = useState<ImageData[]>([]);
 
   const [selectedImage, setSelectedImage] = useState<ImageData | null>(null);
   const [showUpload, setShowUpload] = useState(false);
@@ -123,6 +117,14 @@ export default function GalleryPage() {
   // Sorting/Filtering State
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [selectedLabel, setSelectedLabel] = useState<InsigniaType | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const ev = params.get("event");
+      if (ev) setSelectedEvent(ev);
+    }
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = "hidden"; // Prevent scrolling during cinematic
@@ -229,13 +231,12 @@ export default function GalleryPage() {
       <div 
         className="fixed inset-0 z-0 pointer-events-none transition-opacity duration-1000"
         style={{
-          opacity: appLoaded ? 0.15 : 0, 
+          opacity: appLoaded ? 0.5 : 0, 
           backgroundImage: "url('/aot.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundAttachment: "fixed",
-          filter: "grayscale(100%) contrast(150%) brightness(0.8)",
-          mixBlendMode: "multiply"
+          filter: "grayscale(30%) contrast(120%) brightness(0.9)",
         }}
       />
       
@@ -270,7 +271,7 @@ export default function GalleryPage() {
           />
 
           <div className="mx-auto max-w-7xl px-4 md:px-8 pb-12 pt-16 relative z-10 w-full">
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 lg:gap-8">
               <div>
                 <motion.div
                   className="flex items-center gap-4 mb-2"
@@ -278,12 +279,12 @@ export default function GalleryPage() {
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.2 }}
                 >
-                  <div className="h-[2px] w-12 bg-[#8a0303]" />
-                  <span className="text-xs font-bold tracking-widest text-[#8a0303]">PROJECT FILE 01</span>
+                  <div className="h-[2px] w-8 md:w-12 bg-[#8a0303]" />
+                  <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#8a0303]">PROJECT FILE 01</span>
                 </motion.div>
                 
                 <motion.h2
-                  className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-black uppercase leading-none"
+                  className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-black uppercase leading-[0.9] md:leading-none"
                   style={{ fontFamily: "var(--font-cinzel)" }}
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -295,19 +296,19 @@ export default function GalleryPage() {
 
               {/* Action bar (Upload Toggle) */}
               <motion.div
-                className="flex items-center gap-6"
+                className="flex items-center justify-between lg:justify-end w-full lg:w-auto gap-4 md:gap-6"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <div className="text-right hidden sm:block">
-                  <p className="text-xs font-bold text-black uppercase tracking-widest">Total Records</p>
-                  <p className="text-2xl font-light text-black font-serif leading-none">{images.length.toString().padStart(3, '0')}</p>
+                <div className="text-left md:text-right flex-shrink-0">
+                  <p className="text-[10px] md:text-xs font-bold text-black uppercase tracking-widest">Total Records</p>
+                  <p className="text-xl md:text-2xl font-light text-black font-serif leading-none">{images.length.toString().padStart(3, '0')}</p>
                 </div>
 
                 <button
                   onClick={() => setShowUpload(!showUpload)}
-                  className="group relative flex items-center justify-center overflow-hidden sharp-border bg-black px-4 md:px-8 py-4 text-xs font-bold uppercase tracking-widest transition-colors w-40 md:w-48 h-14"
+                  className="group relative flex items-center justify-center overflow-hidden sharp-border bg-black px-4 md:px-8 py-3 md:py-4 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-colors w-full sm:w-40 md:w-48 h-12 md:h-14"
                 >
                   {/* Button hover blood fill */}
                   <span className="absolute inset-0 bg-[#8a0303] transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
@@ -337,14 +338,14 @@ export default function GalleryPage() {
         </motion.section>
 
         {/* ── Filters & View Switcher ── */}
-        <div className="mx-auto flex flex-col md:flex-row max-w-7xl items-start md:items-center justify-between px-4 md:px-8 py-8 relative z-10 w-full gap-6">
+        <div className="mx-auto flex flex-col md:flex-row max-w-7xl items-start md:items-center justify-between px-4 md:px-8 py-6 md:py-8 relative z-10 w-full gap-4 md:gap-6">
           
-          <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
              {/* Event Filter */}
-             <div className="flex bg-white sharp-border">
-                <span className="px-3 md:px-4 py-2 text-[9px] md:text-[10px] font-bold uppercase border-r border-black bg-black text-white flex items-center">Event</span>
+             <div className="flex bg-white sharp-border w-full sm:w-auto relative group">
+                <span className="px-3 md:px-4 py-2.5 text-[9px] md:text-[10px] font-bold uppercase border-r border-black bg-black text-white flex items-center text-nowrap">Event</span>
                 <select 
-                   className="bg-transparent px-3 py-2 text-[10px] uppercase font-bold text-black focus:outline-none cursor-pointer min-w[120px]"
+                   className="bg-transparent px-3 py-2 text-[10px] uppercase font-bold text-black focus:outline-none cursor-pointer w-full"
                    value={selectedEvent || ""}
                    onChange={(e) => setSelectedEvent(e.target.value || null)}
                 >
@@ -356,10 +357,10 @@ export default function GalleryPage() {
              </div>
 
              {/* Faction/Label Filter */}
-             <div className="flex bg-white sharp-border">
-                <span className="px-3 md:px-4 py-2 text-[9px] md:text-[10px] font-bold uppercase border-r border-black bg-black text-white flex items-center">Faction</span>
+             <div className="flex bg-white sharp-border w-full sm:w-auto relative group">
+                <span className="px-3 md:px-4 py-2.5 text-[9px] md:text-[10px] font-bold uppercase border-r border-black bg-black text-white flex items-center text-nowrap">Faction</span>
                 <select 
-                   className="bg-transparent px-3 py-2 text-[10px] uppercase font-bold text-black focus:outline-none cursor-pointer mix-w-[120px]"
+                   className="bg-transparent px-3 py-2 text-[10px] uppercase font-bold text-black focus:outline-none cursor-pointer w-full"
                    value={selectedLabel || ""}
                    onChange={(e) => setSelectedLabel((e.target.value as InsigniaType) || null)}
                 >
@@ -458,7 +459,7 @@ export default function GalleryPage() {
 
               {/* Close Button UI */}
               <button
-                className="fixed top-4 right-4 md:top-8 md:right-8 flex items-center gap-3 text-black hover:text-[#8a0303] transition-colors z-[110] group bg-white md:bg-transparent p-2 md:p-0 sharp-border md:border-none"
+                className="fixed top-2 right-2 md:top-8 md:right-8 flex items-center gap-2 md:gap-3 text-black hover:text-[#8a0303] transition-colors z-[110] group bg-white p-2 md:p-0 sharp-border md:bg-transparent md:border-none shadow-lg md:shadow-none"
                 onClick={() => setSelectedImage(null)}
               >
                 <span className="text-[10px] md:text-xs font-bold tracking-widest uppercase hidden sm:block">Close</span>
@@ -474,12 +475,12 @@ export default function GalleryPage() {
                 transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }} // Snappy cinematic ease
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="sharp-border bg-white p-2 md:p-4 shadow-2xl relative">
+                <div className="sharp-border bg-white p-2 shadow-2xl relative w-full flex justify-center mt-12 md:mt-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={selectedImage.url}
                     alt={selectedImage.caption || ""}
-                    className="max-h-[80vh] w-auto max-w-full object-contain border-2 border-black"
+                    className="max-h-[65vh] md:max-h-[80vh] w-auto max-w-full object-contain border border-black"
                   />
                   
                   {/* Event Name Tag floating on Image if present */}

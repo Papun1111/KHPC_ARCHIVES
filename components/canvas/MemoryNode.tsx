@@ -21,49 +21,42 @@ function MemoryNodeComponent({ data, selected }: NodeProps<MemoryNodeType>) {
     >
       {/* Sharp Border Frame */}
       <div
-        className="relative bg-white sharp-border p-2 shadow-xl"
+        className="relative bg-[#050510] border border-[#ffeedd]/30 p-2 shadow-[0_0_15px_rgba(255,238,221,0.1)] transition-shadow group-hover:shadow-[0_0_25px_rgba(255,238,221,0.5)]"
         style={{
           width: "180px",
           height: "180px",
-          outline: selected ? "3px solid #8a0303" : "none",
-          outlineOffset: "2px",
+          outline: selected ? "2px solid #ffeedd" : "none",
+          outlineOffset: "4px",
+          borderRadius: "4px",
         }}
       >
-        {/* Grey noise overlay */ }
-        <div 
-          className="absolute inset-0 pointer-events-none opacity-30 mix-blend-multiply transition-opacity duration-300 group-hover:opacity-0"
-          style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
-          }}
-        />
-
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={data.imageUrl}
           alt={data.caption || "Archive element"}
-          className="h-full w-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500 sharp-border"
+          className="h-full w-full object-cover filter brightness-75 sepia-[0.3] hover:sepia-0 group-hover:brightness-110 transition-all duration-500 rounded-sm"
         />
 
-        {/* Aggressive Red Overlay on Hover */}
+        {/* Ethereal Glow Overlay on Hover */}
         <motion.div
-          className="absolute inset-0 bg-[#8a0303] mix-blend-multiply z-10"
+          className="absolute inset-0 bg-[#ffeedd] mix-blend-overlay z-10 pointer-events-none"
           initial={{ opacity: 0 }}
-          whileHover={{ opacity: 0.1 }}
-          transition={{ duration: 0.2 }}
+          whileHover={{ opacity: 0.2 }}
+          transition={{ duration: 0.3 }}
         />
 
-        {/* Hover Caption Overlay (Stark White Block) */}
+        {/* Hover Caption Overlay (Dark Block with glowing text) */}
         <motion.div
-          className="absolute bottom-2 left-2 right-2 bg-white sharp-border z-20 overflow-hidden"
+          className="absolute bottom-2 left-2 right-2 bg-[#050510]/90 border border-[#ffeedd]/50 backdrop-blur-sm z-20 overflow-hidden rounded-sm"
           initial={{ opacity: 0, y: 10 }}
           whileHover={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
         >
           {data.caption && (
             <div className="flex">
-               <div className="w-1 bg-[#8a0303] shrink-0" />
+               <div className="w-1 bg-[#ffeedd] shrink-0 shadow-[0_0_5px_#ffeedd]" />
                <p
-                 className="p-2 text-[8px] leading-tight text-black font-bold uppercase tracking-widest break-words"
+                 className="p-2 text-[8px] leading-tight text-[#ffeedd] font-bold uppercase tracking-widest break-words"
                  style={{ fontFamily: "var(--font-cinzel)" }}
                >
                  {data.caption.slice(0, 45)}
@@ -75,7 +68,7 @@ function MemoryNodeComponent({ data, selected }: NodeProps<MemoryNodeType>) {
 
         {/* Favorite marker */}
         {data.isFavorite && (
-          <div className="absolute top-1 right-1 w-6 h-6 bg-[#8a0303] text-white flex items-center justify-center sharp-border z-30 shadow-sm transition-transform hover:scale-110">
+          <div className="absolute top-1 right-1 w-6 h-6 bg-[#ffeedd] text-[#050510] flex items-center justify-center rounded-sm z-30 shadow-[0_0_10px_rgba(255,238,221,0.8)] transition-transform hover:scale-110">
             <span className="text-[10px] font-serif">★</span>
           </div>
         )}
@@ -84,12 +77,12 @@ function MemoryNodeComponent({ data, selected }: NodeProps<MemoryNodeType>) {
       {/* Invisible Handles for React Flow Layout */}
       <Handle
         type="target"
-        position={Position.Top}
-        className="opacity-0" // Hide the dots completely, just keep logic
+        position={Position.Bottom}
+        className="opacity-0"
       />
       <Handle
         type="source"
-        position={Position.Bottom}
+        position={Position.Top}
         className="opacity-0"
       />
     </motion.div>

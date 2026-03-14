@@ -3,12 +3,12 @@
 import { memo } from "react";
 import {
   BaseEdge,
-  getStraightPath,
+  getBezierPath,
   type Edge,
   type EdgeProps,
 } from "@xyflow/react";
 
-// ─── PathEdge: Jagged, chaotic black/blood connections ──────────────────
+// ─── PathEdge: Ethereal glowing connections ──────────────────
 
 type PathEdgeData = Record<string, never>;
 type PathEdgeType = Edge<PathEdgeData, "path">;
@@ -21,8 +21,8 @@ function PathEdgeComponent({
   targetY,
   style,
 }: EdgeProps<PathEdgeType>) {
-  // Use straight path so the line looks tense and pulled tight like a wire
-  const [edgePath] = getStraightPath({
+  // Use a smooth bezier curve for the ethereal paths branching from the tree
+  const [edgePath] = getBezierPath({
     sourceX,
     sourceY,
     targetX,
@@ -31,39 +31,52 @@ function PathEdgeComponent({
 
   return (
     <>
-      {/* Thick jagged drop shadow/stroke like a sketchy ink line */}
+      {/* Outer Glow Halo 1 */}
       <BaseEdge
-        id={`${id}-stroke`}
+        id={`${id}-halo1`}
         path={edgePath}
         style={{
           ...style,
-          stroke: "rgba(0, 0, 0, 0.1)",
-          strokeWidth: 4,
-          filter: "drop-shadow(2px 2px 0px rgba(0,0,0,0.1))",
+          stroke: "rgba(255, 238, 221, 0.15)",
+          strokeWidth: 12,
+          filter: "blur(6px)",
         }}
       />
 
-      {/* Main crisp black line */}
+      {/* Outer Glow Halo 2 */}
+      <BaseEdge
+        id={`${id}-halo2`}
+        path={edgePath}
+        style={{
+          ...style,
+          stroke: "rgba(255, 238, 221, 0.3)",
+          strokeWidth: 6,
+          filter: "blur(3px)",
+        }}
+      />
+
+      {/* Main bright ethereal core */}
       <BaseEdge
         id={id}
         path={edgePath}
         style={{
           ...style,
-          stroke: "#000000",
-          strokeWidth: 1.5,
+          stroke: "#ffeedd",
+          strokeWidth: 2,
         }}
       />
 
-      {/* Chaotic bleeding red dashes running along the wire */}
+      {/* Flowing energy pulse moving along the branch */}
       <path
         d={edgePath}
         fill="none"
-        stroke="#8a0303"
-        strokeWidth="1.5"
-        className="animate-path-flow mix-blend-multiply"
+        stroke="#ffffff"
+        strokeWidth="3"
+        className="animate-path-flow mix-blend-screen"
         style={{
-          strokeDasharray: "2 15",
-          strokeLinecap: "square",
+          strokeDasharray: "2 25",
+          strokeLinecap: "round",
+          filter: "drop-shadow(0 0 4px #ffffff)",
         }}
       />
     </>

@@ -26,6 +26,7 @@
     background-color: #f4f4f4;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
     overflow-x: hidden;
+    scroll-behavior: smooth;
   }
 
   /* Custom minimalist scrollbar */
@@ -112,6 +113,23 @@
 *:focus-visible {
   outline: 2px solid #8a0303;
   outline-offset: 2px;
+}
+
+/* Cinematic glowing text hover effect */
+.hover-glow-text {
+  transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+.hover-glow-text:hover {
+  text-shadow: 0 0 10px rgba(138, 3, 3, 0.8), 0 0 20px rgba(138, 3, 3, 0.5);
+  color: #8a0303;
+}
+
+.hover-glow-text-white {
+  transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+.hover-glow-text-white:hover {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+  color: #ffffff;
 }
 
 /* ─── React Flow Overrides (Stark theme) ─────────────────────────────── */

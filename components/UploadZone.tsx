@@ -148,13 +148,28 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
         </AnimatePresence>
 
         <motion.div
-          className="relative h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer overflow-hidden bg-[#f4f4f4] transition-colors group"
-          style={{ border: isDragOver ? "2px solid #8a0303" : "1px solid #000000" }}
+          className="relative h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer overflow-hidden bg-[#f4f4f4] transition-all duration-300 group"
+          style={{ 
+            border: isDragOver ? "2px solid #8a0303" : "1px solid #000000",
+            boxShadow: isDragOver ? "inset 0 0 50px rgba(138, 3, 3, 0.2)" : "none"
+          }}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onClick={() => fileInputRef.current?.click()}
         >
+          {/* Blood pulse aura on drag over */}
+          <AnimatePresence>
+             {isDragOver && (
+                <motion.div
+                   className="absolute inset-0 bg-[#8a0303]/5 pointer-events-none z-0"
+                   initial={{ opacity: 0 }}
+                   animate={{ opacity: [0.5, 1, 0.5] }}
+                   transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                />
+             )}
+          </AnimatePresence>
+
           <input
             ref={fileInputRef}
             type="file"
@@ -167,7 +182,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           <AnimatePresence>
             {isUploading && (
               <motion.div 
-                className="absolute inset-0 opacity-10 pointer-events-none"
+                className="absolute inset-0 opacity-10 pointer-events-none z-0"
                 style={{
                   backgroundImage: "repeating-linear-gradient(-45deg, #000, #000 10px, transparent 10px, transparent 20px)",
                   backgroundSize: "28px 28px",
@@ -178,19 +193,19 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
             )}
           </AnimatePresence>
 
-          <div className="absolute inset-1 border border-black opacity-20 pointer-events-none" />
+          <div className="absolute inset-1 border border-black opacity-20 pointer-events-none z-0" />
 
           <div className="flex flex-col items-center justify-center px-6 py-16 relative z-10 w-full text-center">
             <motion.div
-              className="mb-6 h-12 w-12 flex items-center justify-center bg-black text-white group-hover:bg-[#8a0303] transition-colors duration-300"
-              animate={{ scale: isDragOver ? 1.1 : 1, rotate: isDragOver ? 90 : 0 }}
+              className={`mb-6 h-12 w-12 flex items-center justify-center text-white transition-colors duration-300 ${isDragOver ? "bg-[#8a0303]" : "bg-black group-hover:bg-[#8a0303]"}`}
+              animate={{ scale: isDragOver ? 1.2 : 1, rotate: isDragOver ? 90 : 0 }}
             >
               <span className="text-2xl font-light">+</span>
             </motion.div>
 
             {isUploading ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center w-full">
-                <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#8a0303]">
+                <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#8a0303] hover-glow-text">
                   Transmitting Data...
                 </p>
                 <div className="mx-auto mt-4 h-[2px] w-1/2 bg-[#e5e5e5] relative overflow-hidden">
@@ -204,7 +219,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
               </motion.div>
             ) : (
               <div>
-                <h4 className="text-xl font-bold uppercase tracking-widest text-black transition-colors" style={{ fontFamily: "var(--font-cinzel)" }}>
+                <h4 className={`text-xl font-bold uppercase tracking-widest transition-colors ${isDragOver ? "text-[#8a0303]" : "text-black"}`} style={{ fontFamily: "var(--font-cinzel)" }}>
                   {isDragOver ? "INITIATE TRANSFER" : "CONFIRM & APPEND"}
                 </h4>
                 <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-[#888888]">
@@ -214,8 +229,8 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
             )}
           </div>
           
-          <div className="absolute top-0 left-0 w-4 h-4 border-b border-r border-black pointer-events-none opacity-50" />
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-t border-l border-black pointer-events-none opacity-50" />
+          <div className="absolute top-0 left-0 w-4 h-4 border-b border-r border-black pointer-events-none opacity-50 z-10" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 border-t border-l border-black pointer-events-none opacity-50 z-10" />
         </motion.div>
       </div>
     </div>

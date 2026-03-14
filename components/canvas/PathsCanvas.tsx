@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import {
   ReactFlow,
   Background,
@@ -17,6 +17,7 @@ import "@xyflow/react/dist/style.css";
 import { MemoryNode, type MemoryNodeData } from "./MemoryNode";
 import { CoordinateNode } from "./CoordinateNode";
 import { PathEdge } from "./PathEdge";
+import { EventNode, type EventNodeData } from "./EventNode";
 import type { ImageData } from "@/components/ImageCard";
 import { CANVAS_CONFIG } from "@/lib/constants";
 
@@ -24,83 +25,113 @@ import { CANVAS_CONFIG } from "@/lib/constants";
 
 interface PathsCanvasProps {
   images: ImageData[];
-  onNodeClick?: (image: ImageData) => void;
+  onNodeClick?: (identifier: ImageData | string) => void;
 }
 
-// ─── Node/Edge Type Registration (defined outside component to prevent re-renders) ──
+// ─── Node/Edge Type Registration ────────────────────────────────────────
 
 const nodeTypes = {
   memory: MemoryNode,
   coordinate: CoordinateNode,
+  event: EventNode,
 } as const;
 
 const edgeTypes = {
   path: PathEdge,
 } as const;
 
-// ─── Radial Layout Generator ────────────────────────────────────────────
+// ─── Tree Layout Generator ──────────────────────────────────────────────
 
-function generateRadialLayout(images: ImageData[]) {
+function generateTreeLayout(images: ImageData[]) {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
 
-  // Central Coordinate node
+  // Group images by eventName
+  const eventsMap = new Map<string, ImageData[]>();
+  const defaultEvent = "Unknown Memory";
+  
+  images.forEach(img => {
+    // some images might have null eventName in the DB
+    const ev = img.eventName || defaultEvent;
+    if (!eventsMap.has(ev)) eventsMap.set(ev, []);
+    eventsMap.get(ev)!.push(img);
+  });
+
+  const eventNames = Array.from(eventsMap.keys());
+
+  // Central Coordinate node at the bottom
   nodes.push({
     id: "coordinate",
     type: "coordinate",
-    position: { x: 0, y: 0 },
+    position: { x: 0, y: 1500 },
     data: {},
     draggable: true,
   });
 
-  // Distribute images in concentric rings
-  const ringRadius = [300, 550, 800];
-  let imageIndex = 0;
+  // Calculate event branch positions
+  const eventSpacingX = 500;
+  const numEvents = eventNames.length;
+  // center evenly around x=0
+  const startX = numEvents > 1 ? -((numEvents - 1) * eventSpacingX) / 2 : 0;
 
-  for (let ring = 0; ring < ringRadius.length && imageIndex < images.length; ring++) {
-    const radius = ringRadius[ring];
-    const itemsInRing = Math.min(
-      ring === 0 ? 6 : ring === 1 ? 10 : 14,
-      images.length - imageIndex
-    );
-    const angleStep = (2 * Math.PI) / itemsInRing;
-    const angleOffset = ring * (Math.PI / itemsInRing);
+  eventNames.forEach((eventName, eventIndex) => {
+    const eventX = startX + eventIndex * eventSpacingX;
+    const eventY = 1000; // Above Coordinate
+    
+    const eventNodeId = `event-${eventName}`;
 
-    for (let i = 0; i < itemsInRing; i++) {
-      const image = images[imageIndex];
-      if (!image) break;
+    nodes.push({
+      id: eventNodeId,
+      type: "event",
+      position: { x: eventX - 110, y: eventY }, // center the 220px wide node
+      data: { eventName },
+      draggable: true,
+    });
 
-      const angle = angleStep * i + angleOffset;
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
+    // edge from coordinate to event
+    edges.push({
+      id: `edge-coord-${eventNodeId}`,
+      source: "coordinate",
+      target: eventNodeId,
+      type: "path",
+    });
 
-      const nodeId = `memory-${image.id}`;
+    const eventImages = eventsMap.get(eventName) || [];
+    
+    // Distribute memory nodes growing upwards from this event branch
+    eventImages.forEach((img, imgIndex) => {
+      // Alternate left and right, move upwards
+      const isLeft = imgIndex % 2 === 0;
+      const verticalOffset = Math.floor(imgIndex / 2) * 250;
+      
+      const memX = eventX + (isLeft ? -150 : 150) + (Math.random() * 40 - 20);
+      const memY = eventY - 250 - verticalOffset + (Math.random() * 40 - 20);
 
-      const nodeData: MemoryNodeData = {
-        imageUrl: image.url,
-        caption: image.caption || undefined,
-        isFavorite: image.isFavorite,
-      };
-
+      const nodeId = `memory-${img.id}`;
       nodes.push({
         id: nodeId,
         type: "memory",
-        position: { x: x - 70, y: y - 70 },
-        data: nodeData,
+        position: { x: memX - 90, y: memY - 90 },
+        data: {
+          imageUrl: img.url,
+          caption: img.caption || undefined,
+          isFavorite: img.isFavorite,
+        },
         draggable: true,
       });
 
-      edges.push({
-        id: `edge-${nodeId}`,
-        source: "coordinate",
-        target: nodeId,
-        type: "path",
-        animated: true,
-      });
+      // Chain memories or connect to event base
+      const edgeTarget = nodeId;
+      const edgeSource = imgIndex >= 2 ? `memory-${eventImages[imgIndex - 2].id}` : eventNodeId;
 
-      imageIndex++;
-    }
-  }
+      edges.push({
+        id: `edge-${edgeSource}-${edgeTarget}`,
+        source: edgeSource,
+        target: edgeTarget,
+        type: "path",
+      });
+    });
+  });
 
   return { nodes, edges };
 }
@@ -108,27 +139,55 @@ function generateRadialLayout(images: ImageData[]) {
 // ─── PathsCanvas Component ──────────────────────────────────────────────
 
 export function PathsCanvas({ images, onNodeClick }: PathsCanvasProps) {
-  const { nodes: initialNodes, edges: initialEdges } = useMemo(
-    () => generateRadialLayout(images),
-    [images]
-  );
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, , onEdgesChange] = useEdgesState(initialEdges);
+  useEffect(() => {
+    const { nodes: layoutNodes, edges: layoutEdges } = generateTreeLayout(images);
+    setNodes(layoutNodes);
+    setEdges(layoutEdges);
+  }, [images, setNodes, setEdges]);
 
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
-      if (node.type === "memory" && onNodeClick) {
-        const imageId = node.id.replace("memory-", "");
-        const image = images.find((img) => img.id === imageId);
-        if (image) onNodeClick(image);
+      if (onNodeClick) {
+        if (node.type === "memory") {
+          const imageId = node.id.replace("memory-", "");
+          const image = images.find((img) => img.id === imageId);
+          if (image) onNodeClick(image);
+        } else if (node.type === "event") {
+          const eventName = (node.data as EventNodeData).eventName;
+          onNodeClick(eventName);
+        }
       }
     },
     [images, onNodeClick]
   );
 
   return (
-    <div className="h-full w-full bg-[#f4f4f4] relative">
+    <div className="h-full w-full bg-[#050510] relative overflow-hidden">
+      {/* Ymir Background Layer */}
+      <div 
+        className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-1000"
+        style={{
+          opacity: 0.7, 
+          backgroundImage: "url('/ymir.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+          filter: "grayscale(10%) contrast(110%) brightness(0.8)",
+        }}
+      />
+
+      {/* Starry/Dusty background overlay */}
+      <div 
+        className="pointer-events-none absolute inset-0 opacity-20 z-0"
+        style={{
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
+          mixBlendMode: "screen",
+        }}
+      />
+      
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -140,54 +199,57 @@ export function PathsCanvas({ images, onNodeClick }: PathsCanvasProps) {
         minZoom={CANVAS_CONFIG.minZoom}
         maxZoom={CANVAS_CONFIG.maxZoom}
         fitView
-        fitViewOptions={{ padding: 0.3 }}
+        fitViewOptions={{ padding: typeof window !== 'undefined' && window.innerWidth < 768 ? 0.8 : 0.3 }}
         proOptions={{ hideAttribution: true }}
       >
         <Background
-          variant={BackgroundVariant.Cross}
-          gap={60}
-          size={10}
-          color="#e5e5e5"
-          lineWidth={1}
+          variant={BackgroundVariant.Dots}
+          gap={40}
+          size={1.5}
+          color="rgba(255, 238, 221, 0.15)"
         />
         <Controls
           showInteractive={false}
           position="bottom-right"
-          className="sharp-border !shadow-none"
+          className="sharp-border !shadow-none !bg-[#050510] !border-[#ffeedd]/30"
+          style={{
+             fill: "#ffeedd",
+          }}
         />
         <MiniMap
-          className="sharp-border !shadow-none !bg-white"
+          className="sharp-border !shadow-none !bg-[#050510] border !border-[#ffeedd]/30 hidden md:block"
           nodeColor={(node) => {
-            if (node.type === "coordinate") return "#000000";
-            return "#e5e5e5";
+            if (node.type === "coordinate") return "#ffeedd";
+            if (node.type === "event") return "rgba(255,238,221,0.5)";
+            return "rgba(255,238,221,0.2)";
           }}
-          maskColor="rgba(244, 244, 244, 0.7)"
+          maskColor="rgba(5, 5, 16, 0.8)"
           position="bottom-left"
         />
       </ReactFlow>
 
       {/* Canvas decorative corner text */}
       <div
-        className="pointer-events-none absolute left-8 top-24 select-none z-10"
+        className="pointer-events-none absolute left-4 md:left-8 top-16 md:top-24 select-none z-10"
       >
-        <div className="flex items-center gap-4 mb-2">
-          <div className="h-[2px] w-8 bg-[#8a0303]" />
-          <span className="text-[10px] font-bold tracking-widest text-[#8a0303] uppercase">Sector 02</span>
+        <div className="flex items-center gap-2 md:gap-4 mb-1 md:mb-2">
+          <div className="h-[2px] w-4 md:w-8 bg-[#ffeedd]" />
+          <span className="text-[8px] md:text-[10px] font-bold tracking-widest text-[#ffeedd] uppercase">Sector 02</span>
         </div>
         <p
-          className="text-5xl font-black tracking-tighter text-black"
+          className="text-3xl md:text-5xl font-black tracking-tighter text-[#ffeedd] drop-shadow-md leading-none"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
-          PROJECT MAP
+          THE PATHS
         </p>
-        <p className="mt-2 text-[10px] font-bold tracking-[0.4em] uppercase text-black">
-          Architectural Layout Overview
+        <p className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-bold tracking-[0.2em] md:tracking-[0.4em] uppercase text-[#ffeedd]/70">
+          Coordinate Connection Overview
         </p>
       </div>
       
       {/* Decorative vertical bounds */}
-      <div className="pointer-events-none fixed inset-y-0 left-[5%] w-[1px] bg-black opacity-10 z-0" />
-      <div className="pointer-events-none fixed inset-y-0 right-[5%] w-[1px] bg-black opacity-10 z-0" />
+      <div className="pointer-events-none fixed inset-y-0 left-[5%] w-[1px] bg-[#ffeedd] opacity-10 z-0" />
+      <div className="pointer-events-none fixed inset-y-0 right-[5%] w-[1px] bg-[#ffeedd] opacity-10 z-0" />
     </div>
   );
 }
