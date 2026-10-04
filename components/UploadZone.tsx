@@ -37,9 +37,12 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
     async (files: FileList | null) => {
       if (!files || files.length === 0) return;
 
-      const imageFiles = Array.from(files).filter((f) =>
-        f.type.startsWith("image/")
-      );
+      const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.heic', '.heif', '.tiff', '.tif', '.raw', '.avif'];
+      const imageFiles = Array.from(files).filter((f) => {
+        if (f.type.startsWith("image/")) return true;
+        const ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+        return validExtensions.includes(ext);
+      });
       if (imageFiles.length === 0) return;
 
       setIsUploading(true);
@@ -193,7 +196,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.jpg,.jpeg,.png,.gif,.bmp,.webp,.svg,.heic,.heif,.tiff,.tif,.raw,.avif"
             multiple
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}
