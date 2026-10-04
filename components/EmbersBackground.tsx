@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-// ─── EmbersBackground: Battlefield floating embers effect ───────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// EmbersBackground: Battlefield floating embers & steam — Dark AoT Theme
+// ═══════════════════════════════════════════════════════════════════════════
 
 export function EmbersBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -39,32 +41,50 @@ export function EmbersBackground() {
       maxLife: number;
       opacity: number;
       color: string;
+      type: "ember" | "steam";
 
       constructor() {
+        this.type = Math.random() > 0.7 ? "steam" : "ember";
         this.x = Math.random() * width;
-        this.y = height + Math.random() * 200; // Start below screen
-        this.size = Math.random() * 3 + 1;
-        this.speedX = (Math.random() - 0.5) * 2;
-        this.speedY = -(Math.random() * 3 + 1); // Float upwards
-        this.maxLife = Math.random() * 100 + 50;
+        this.y = height + Math.random() * 200;
+        this.size = this.type === "steam" ? Math.random() * 8 + 3 : Math.random() * 2.5 + 0.5;
+        this.speedX = (Math.random() - 0.5) * (this.type === "steam" ? 1 : 2);
+        this.speedY = this.type === "steam" ? -(Math.random() * 1.5 + 0.5) : -(Math.random() * 2.5 + 1);
+        this.maxLife = Math.random() * 120 + 60;
         this.life = this.maxLife;
-        this.opacity = Math.random() * 0.8 + 0.2;
-        
-        // Ember colors: orange, red, yellow
-        const colors = [
-          "rgba(255, 100, 0, OPACITY)", // fiery orange
-          "rgba(255, 50, 0, OPACITY)",  // red-orange
-          "rgba(255, 200, 0, OPACITY)", // bright yellow
-          "rgba(200, 200, 200, OPACITY)" // ash/smoke
-        ];
-        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.opacity = this.type === "steam" ? Math.random() * 0.15 + 0.05 : Math.random() * 0.7 + 0.2;
+
+        if (this.type === "steam") {
+          // Steam colors: white/gray translucent
+          const steamColors = [
+            "rgba(180, 180, 180, OPACITY)",
+            "rgba(200, 200, 200, OPACITY)",
+            "rgba(160, 160, 170, OPACITY)",
+          ];
+          this.color = steamColors[Math.floor(Math.random() * steamColors.length)];
+        } else {
+          // Ember colors: warm amber/orange/red (complementing dark theme)
+          const emberColors = [
+            "rgba(212, 168, 67, OPACITY)",  // titan amber
+            "rgba(200, 100, 0, OPACITY)",   // deep orange
+            "rgba(160, 60, 20, OPACITY)",   // ember red
+            "rgba(140, 140, 140, OPACITY)", // ash/smoke
+          ];
+          this.color = emberColors[Math.floor(Math.random() * emberColors.length)];
+        }
       }
 
       update() {
-        this.x += this.speedX + (Math.sin(this.life * 0.05) * 0.5); // Add slight drift
-        this.y += this.speedY;
+        if (this.type === "steam") {
+          this.x += this.speedX + (Math.sin(this.life * 0.03) * 0.8);
+          this.y += this.speedY;
+          this.size += 0.02; // Steam expands
+        } else {
+          this.x += this.speedX + (Math.sin(this.life * 0.05) * 0.5);
+          this.y += this.speedY;
+        }
         this.life--;
-        
+
         // Fade out near the end
         if (this.life < 30) {
           this.opacity = (this.life / 30) * this.opacity;
@@ -77,14 +97,15 @@ export function EmbersBackground() {
       }
 
       reset() {
+        this.type = Math.random() > 0.7 ? "steam" : "ember";
         this.x = Math.random() * width;
         this.y = height + 50;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = (Math.random() - 0.5) * 2;
-        this.speedY = -(Math.random() * 3 + 1);
-        this.maxLife = Math.random() * 100 + 100;
+        this.size = this.type === "steam" ? Math.random() * 8 + 3 : Math.random() * 2.5 + 0.5;
+        this.speedX = (Math.random() - 0.5) * (this.type === "steam" ? 1 : 2);
+        this.speedY = this.type === "steam" ? -(Math.random() * 1.5 + 0.5) : -(Math.random() * 2.5 + 1);
+        this.maxLife = Math.random() * 120 + 100;
         this.life = this.maxLife;
-        this.opacity = Math.random() * 0.8 + 0.2;
+        this.opacity = this.type === "steam" ? Math.random() * 0.15 + 0.05 : Math.random() * 0.7 + 0.2;
       }
 
       draw() {
@@ -92,35 +113,45 @@ export function EmbersBackground() {
         ctx.beginPath();
         const currentOpacity = Math.max(0, this.opacity);
         const drawColor = this.color.replace("OPACITY", currentOpacity.toString());
-        
-        // Add glow
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = drawColor;
-        ctx.fillStyle = drawColor;
-        
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
+
+        if (this.type === "steam") {
+          // Soft blurry circles for steam
+          ctx.shadowBlur = 20;
+          ctx.shadowColor = drawColor;
+          ctx.fillStyle = drawColor;
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        } else {
+          // Sharp glowing dots for embers
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = drawColor;
+          ctx.fillStyle = drawColor;
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
       }
     }
 
-    // Initialize particles based on screen size
-    const particleCount = Math.floor((width * height) / 10000); // Responsive amount
+    // Initialize particles — fewer for performance on dark backgrounds
+    const particleCount = Math.min(Math.floor((width * height) / 15000), 120);
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle());
-      // Randomize initial vertical positions so they don't all start at bottom
+      // Randomize initial vertical positions
       particles[i].y = Math.random() * height;
     }
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Add a subtle dark battle smoke overlay at bottom
-      const gradient = ctx.createLinearGradient(0, height - 200, 0, height);
+      // Subtle bottom glow — emanating from below like fires burning
+      const gradient = ctx.createLinearGradient(0, height - 250, 0, height);
       gradient.addColorStop(0, "rgba(10, 11, 16, 0)");
-      gradient.addColorStop(1, "rgba(20, 10, 0, 0.3)"); // slight fiery glow
+      gradient.addColorStop(0.5, "rgba(30, 15, 5, 0.1)");
+      gradient.addColorStop(1, "rgba(40, 20, 0, 0.2)");
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, height - 200, width, 200);
+      ctx.fillRect(0, height - 250, width, 250);
 
       particles.forEach((particle) => {
         particle.update();
@@ -141,8 +172,8 @@ export function EmbersBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-0 h-full w-full"
-      style={{ opacity: 0.6 }}
+      className="pointer-events-none fixed inset-0 z-[1] h-full w-full"
+      style={{ opacity: 0.5 }}
     />
   );
 }

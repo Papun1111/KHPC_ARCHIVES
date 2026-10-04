@@ -1,52 +1,191 @@
 @import "tailwindcss";
 
-/* ─── AoT Theme Tokens (Official Site Style) ─────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   KHPC ARCHIVES — Attack on Titan Dark-Fantasy Theme
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @theme inline {
-  --color-background: #f4f4f4; /* Concrete grey */
-  --color-foreground: #000000;
-  --font-inter: var(--font-inter), sans-serif;
-  --font-cinzel: var(--font-cinzel), serif;
+  /* ── Core Backgrounds ── */
+  --color-background: #0a0b10;
+  --color-foreground: #e8e6e1;
+  --color-bg-secondary: #111318;
+  --color-bg-card: #15171e;
+  --color-bg-elevated: #1a1d26;
 
-  /* Custom Animations */
+  /* ── AoT Faction & Lore Colors ── */
+  --color-survey-green: #3a5a40;
+  --color-survey-green-bright: #4a7c59;
+  --color-wall-stone: #6b6458;
+  --color-wall-stone-light: #8a8275;
+  --color-odm-iron: #8c8fa3;
+  --color-odm-steel: #b0b3c5;
+  --color-blood-red: #8a0303;
+  --color-blood-bright: #bc2020;
+  --color-parchment: #d4c5a0;
+  --color-parchment-dark: #b0a07a;
+  --color-titan-amber: #d4a843;
+
+  /* ── Text ── */
+  --color-text-primary: #e8e6e1;
+  --color-text-secondary: #9a978f;
+  --color-text-muted: #5a584f;
+
+  /* ── Typography ── */
+  --font-inter: var(--font-inter), "Inter", sans-serif;
+  --font-cinzel: var(--font-cinzel), "Cinzel", serif;
+
+  /* ── Custom Animations ── */
+  --animate-ember-float: ember-float 6s ease-in-out infinite;
+  --animate-steam-rise: steam-rise 4s ease-out infinite;
+  --animate-scan-line: scan-line 4s linear infinite;
+  --animate-gear-click: gear-click 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+  --animate-parchment-fade: parchment-fade 0.6s ease-out forwards;
   --animate-blood-drip: blood-drip 2s ease-in forwards;
   --animate-crack: crack-reveal 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   --animate-flash-red: flash-red 0.3s ease-out;
   --animate-noise: noise 0.2s infinite;
 }
 
-/* ─── Base Styles ────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 @layer base {
   html,
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-inter);
-    /* Subtle concrete texture overlay using SVG noise */
-    background-color: #f4f4f4;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    background-color: #0a0b10;
+    /* Dark noise texture — aged parchment-on-dark effect */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
     overflow-x: hidden;
     scroll-behavior: smooth;
   }
 
-  /* Custom minimalist scrollbar */
+  /* ── Dark Scrollbar ── */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #e5e5e5;
+    background: #111318;
   }
   ::-webkit-scrollbar-thumb {
-    background: #000000;
+    background: #3a5a40;
+    border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #8a0303;
   }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #3a5a40 #111318;
+  }
 }
 
-/* ─── Keyframes ──────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   KEYFRAME ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Embers: Floating battlefield particles ── */
+@keyframes ember-float {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-40vh) translateX(15px) scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-80vh) translateX(-10px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* ── Steam: Titan transformation steam dissipation ── */
+@keyframes steam-rise {
+  0% {
+    transform: translateY(0) scaleX(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-30px) scaleX(1.5);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-60px) scaleX(2);
+    opacity: 0;
+  }
+}
+
+/* ── Scan Line: Military scanner horizontal sweep ── */
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  95% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+/* ── Gear Click: Mechanical ODM trigger snap ── */
+@keyframes gear-click {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.94);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ── Parchment Fade: Aged document reveal ── */
+@keyframes parchment-fade {
+  0% {
+    opacity: 0;
+    filter: sepia(100%) brightness(0.6);
+    transform: translateY(8px);
+  }
+  60% {
+    filter: sepia(40%) brightness(0.9);
+  }
+  100% {
+    opacity: 1;
+    filter: sepia(0%) brightness(1);
+    transform: translateY(0);
+  }
+}
+
+/* ── Metallic Sheen: Sweep across element ── */
+@keyframes metallic-sheen {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* ── Blood Drip (kept from original) ── */
 @keyframes blood-drip {
   0% {
     transform: scaleY(0);
@@ -58,6 +197,7 @@
   }
 }
 
+/* ── Crack Reveal (kept from original) ── */
 @keyframes crack-reveal {
   0% {
     clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%);
@@ -73,6 +213,7 @@
   }
 }
 
+/* ── Flash Red (kept from original) ── */
 @keyframes flash-red {
   0% {
     background-color: transparent;
@@ -85,6 +226,7 @@
   }
 }
 
+/* ── Noise (kept from original) ── */
 @keyframes noise {
   0% { transform: translate(0,0) }
   10% { transform: translate(-5%,-5%) }
@@ -99,67 +241,270 @@
   100% { transform: translate(5%,0) }
 }
 
-/* ─── Component Utilities ────────────────────────────────────────────── */
+/* ── Pulse Glow ── */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(58, 90, 64, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(58, 90, 64, 0.6), 0 0 40px rgba(58, 90, 64, 0.2);
+  }
+}
 
-/* Stark black borders */
+/* ── Typewriter Blink ── */
+@keyframes typewriter-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.animate-typewriter-blink {
+  animation: typewriter-blink 0.8s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMPONENT UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Wall-Stone Borders ── */
+.aot-border {
+  border: 1px solid #3a3830;
+}
+.aot-border-b {
+  border-bottom: 1px solid #3a3830;
+}
+.aot-border-light {
+  border: 1px solid rgba(107, 100, 88, 0.3);
+}
+
+/* Legacy sharp-border (remapped to dark theme) */
 .sharp-border {
-  border: 1px solid #000000;
+  border: 1px solid #3a3830;
 }
 .sharp-border-b {
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #3a3830;
 }
 
-/* Aggressive focus outlines */
+/* ── Focus Outlines ── */
 *:focus-visible {
-  outline: 2px solid #8a0303;
+  outline: 2px solid #3a5a40;
   outline-offset: 2px;
 }
 
-/* Cinematic glowing text hover effect */
+/* ── Hover Glow Effects ── */
 .hover-glow-text {
   transition: text-shadow 0.3s ease, color 0.3s ease;
 }
 .hover-glow-text:hover {
+  text-shadow: 0 0 10px rgba(58, 90, 64, 0.8), 0 0 20px rgba(58, 90, 64, 0.4);
+  color: #4a7c59;
+}
+
+.hover-glow-red {
+  transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+.hover-glow-red:hover {
   text-shadow: 0 0 10px rgba(138, 3, 3, 0.8), 0 0 20px rgba(138, 3, 3, 0.5);
-  color: #8a0303;
+  color: #bc2020;
 }
 
 .hover-glow-text-white {
   transition: text-shadow 0.3s ease, color 0.3s ease;
 }
 .hover-glow-text-white:hover {
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 10px rgba(232, 230, 225, 0.6), 0 0 20px rgba(232, 230, 225, 0.3);
   color: #ffffff;
 }
 
-/* ─── React Flow Overrides (Stark theme) ─────────────────────────────── */
+/* ── Metallic Sheen ── */
+.aot-metallic {
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(176, 179, 197, 0.08) 40%,
+    rgba(176, 179, 197, 0.15) 50%,
+    rgba(176, 179, 197, 0.08) 60%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+}
+.aot-metallic:hover {
+  animation: metallic-sheen 0.8s ease-out;
+}
+
+/* ── ODM Trigger Button ── */
+.odm-trigger {
+  position: relative;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+.odm-trigger:active {
+  animation: gear-click 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.odm-trigger:hover {
+  box-shadow: 0 0 15px rgba(58, 90, 64, 0.3), inset 0 1px 0 rgba(176, 179, 197, 0.15);
+}
+
+/* ── Parchment Background ── */
+.aot-parchment-bg {
+  background-color: #1a1915;
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+/* ── Card Styles ── */
+.aot-card {
+  background-color: #15171e;
+  border: 1px solid #3a3830;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.aot-card:hover {
+  border-color: #4a7c59;
+  box-shadow: 0 0 20px rgba(58, 90, 64, 0.15);
+}
+
+/* ── Ember Particle (CSS-only, supplementary) ── */
+.aot-ember {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #d4a843;
+  box-shadow: 0 0 6px 2px rgba(212, 168, 67, 0.6);
+  animation: ember-float 6s ease-in-out infinite;
+  pointer-events: none;
+}
+.aot-ember:nth-child(2n) {
+  background: #bc2020;
+  box-shadow: 0 0 6px 2px rgba(188, 32, 32, 0.5);
+  animation-duration: 8s;
+  animation-delay: 1s;
+}
+.aot-ember:nth-child(3n) {
+  background: #ff6400;
+  box-shadow: 0 0 6px 2px rgba(255, 100, 0, 0.5);
+  animation-duration: 7s;
+  animation-delay: 2s;
+}
+
+/* ── Scan Line Overlay ── */
+.aot-scan-line::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(58, 90, 64, 0.5), transparent);
+  animation: scan-line 4s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Steam Effect ── */
+.aot-steam::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 60px;
+  background: radial-gradient(ellipse at bottom, rgba(180, 180, 180, 0.15), transparent);
+  animation: steam-rise 4s ease-out infinite;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REACT FLOW OVERRIDES (Dark Theme)
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 .react-flow__bg {
-  background-color: #f4f4f4 !important;
+  background-color: #0a0b10 !important;
 }
 
 .react-flow__controls button {
-  background-color: #ffffff !important;
-  border: 1px solid #000000 !important;
+  background-color: #15171e !important;
+  border: 1px solid #3a3830 !important;
   border-radius: 0 !important;
-  fill: #000000 !important;
+  fill: #e8e6e1 !important;
 }
 
 .react-flow__controls button:hover {
-  background-color: #000000 !important;
+  background-color: #3a5a40 !important;
   fill: #ffffff !important;
 }
 
 .react-flow__minimap {
-  background-color: #ffffff !important;
-  border: 1px solid #000000 !important;
+  background-color: #111318 !important;
+  border: 1px solid #3a3830 !important;
   border-radius: 0 !important;
 }
 
 .react-flow__minimap-mask {
-  fill: rgba(244, 244, 244, 0.6) !important;
+  fill: rgba(10, 11, 16, 0.6) !important;
 }
 
 .react-flow__minimap-node {
   border-radius: 0 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GALLERY-SPECIFIC STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Panorama horizontal scroll ── */
+.panorama-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  scrollbar-width: thin;
+  scrollbar-color: #3a5a40 #111318;
+}
+.panorama-scroll:active {
+  cursor: grabbing;
+}
+.panorama-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+.panorama-scroll::-webkit-scrollbar-track {
+  background: #111318;
+}
+.panorama-scroll::-webkit-scrollbar-thumb {
+  background: #3a5a40;
+  border-radius: 2px;
+}
+
+/* ── Collage desk texture ── */
+.collage-desk {
+  background-color: #1a1712;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(58, 54, 48, 0.15) 60px,
+      rgba(58, 54, 48, 0.15) 61px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 60px,
+      rgba(58, 54, 48, 0.1) 60px,
+      rgba(58, 54, 48, 0.1) 61px
+    ),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='wood'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04 0.8' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23wood)' opacity='0.08'/%3E%3C/svg%3E");
+}
+
+/* ── Carousel dot indicators ── */
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3a3830;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.carousel-dot.active {
+  background: #3a5a40;
+  box-shadow: 0 0 8px rgba(58, 90, 64, 0.6);
+  transform: scale(1.3);
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cinzel_Decorative } from "next/font/google";
+import { Inter, Cinzel } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,18 +8,24 @@ const inter = Inter({
   display: "swap",
 });
 
-const cinzel = Cinzel_Decorative({
+const cinzel = Cinzel({
   variable: "--font-cinzel",
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "The Paths — KHPC Archives",
+  title: "KHPC Archives — Beyond the Walls",
   description:
-    "A cinematic image gallery and mind map. Explore memories across the infinite canvas of The Paths.",
-  keywords: ["KHPC Archives", "Gallery", "Mind Map", "The Paths"],
+    "A cinematic image archive and expedition log. Explore memories from beyond the Walls across the infinite paths of history.",
+  keywords: [
+    "KHPC Archives",
+    "Attack on Titan",
+    "Gallery",
+    "Survey Corps",
+    "The Paths",
+  ],
 };
 
 export default function RootLayout({
@@ -28,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
         className={`${inter.variable} ${cinzel.variable} antialiased`}
       >
