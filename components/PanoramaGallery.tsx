@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, MouseEvent as ReactMouseEvent } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { ImageData } from "@/components/ImageCard";
 
 interface PanoramaGalleryProps {
@@ -71,7 +71,7 @@ export default function PanoramaGallery({ images, onSelectImage }: PanoramaGalle
     scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
   };
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -81,7 +81,7 @@ export default function PanoramaGallery({ images, onSelectImage }: PanoramaGalle
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, x: 50 },
     show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 100 } },
   };

@@ -39,8 +39,13 @@ function CinematicLoader({ onComplete }: { onComplete: () => void }) {
       initial={{ opacity: 1 }}
       animate={{ opacity: stage === 3 ? 0 : 1 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      onAnimationComplete={(definition: any) => {
-        if (definition.opacity === 0) {
+      onAnimationComplete={(definition) => {
+        if (
+          typeof definition === "object" &&
+          definition !== null &&
+          "opacity" in definition &&
+          (definition as Record<string, unknown>).opacity === 0
+        ) {
           document.body.style.overflow = "auto";
         }
       }}
@@ -162,10 +167,10 @@ export default function GalleryPage() {
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setImages(
-            data.map((img: any) => ({
+            data.map((img: Omit<ImageData, 'labels'> & { labels?: { name: string }[] }) => ({
               ...img,
-              labels: img.labels?.map((l: any) => l.name) || [],
-            }))
+              labels: img.labels?.map((l) => l.name) || [],
+            }) as unknown as ImageData)
           );
         }
       })
@@ -215,13 +220,13 @@ export default function GalleryPage() {
 
         if (res.ok) {
           const rawData = await res.json();
-          createdImages = rawData.map((img: any) => ({
+          createdImages = rawData.map((img: Omit<ImageData, 'labels'> & { labels?: ({ name: string } | string)[] }) => ({
             ...img,
             labels:
-              img.labels?.map((l: any) =>
+              img.labels?.map((l) =>
                 typeof l === "string" ? l : l.name
               ) || [],
-          }));
+          }) as unknown as ImageData);
         } else {
           throw new Error("API Upload failed");
         }
