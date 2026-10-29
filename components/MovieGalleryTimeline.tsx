@@ -20,101 +20,93 @@ export interface MovieGalleryTimelineProps {
   movies?: MovieEntry[];
   className?: string;
   onMovieSelect?: (movie: MovieEntry) => void;
+  onAddMovie?: () => void;
+  onDeleteMovie?: (id: string) => void;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Demo Data — Official Attack on Titan Theatrical Releases
+// Empty initial movies list (User uploads their own records)
 // ═══════════════════════════════════════════════════════════════════════════
 
-export const DEMO_MOVIES: MovieEntry[] = [
-  {
-    id: "movie-v1",
-    version: "V1",
-    date: "2025.8.16",
-    category: "MOVIE",
-    title: "Movie Attack On Titan - Special Version - The Last Attack",
-    subtitle:
-      "Special report // Final season theatrical compilation featuring reconstructed battle sequences, remastered 5.1ch surround sound, and exclusive post-credits epilogue footage.",
-    runtime: "145 MIN",
-    format: "THEATRICAL SPECIAL VERSION // 5.1ch",
-    posterUrl: "/aot.jpg",
-    gradient:
-      "radial-gradient(circle at 75% 25%, rgba(196, 30, 30, 0.45) 0%, rgba(138, 3, 3, 0.3) 35%, rgba(21, 21, 21, 0.95) 75%), linear-gradient(135deg, #151515 0%, #1e0909 50%, #420606 100%)",
-  },
-  {
-    id: "movie-v2",
-    version: "V2",
-    date: "2025.8.15",
-    category: "MOVIE",
-    title: "Movie Attack On Titan (2nd part) - Wings of Freedom",
-    subtitle:
-      "Special report // Season 1 compilation film part two, chronicling the fateful 57th Exterior Scouting Mission and the clash against the Female Titan inside Stohess District.",
-    runtime: "120 MIN",
-    format: "THEATRICAL 4K REMASTER // 5.1ch",
-    posterUrl: "/ymir.jpg",
-    gradient:
-      "radial-gradient(circle at 80% 30%, rgba(138, 3, 3, 0.5) 0%, rgba(92, 2, 2, 0.35) 40%, rgba(21, 21, 21, 0.95) 80%), linear-gradient(135deg, #121212 0%, #1c0a0a 45%, #4a0707 100%)",
-  },
-  {
-    id: "movie-v3",
-    version: "V3",
-    date: "2025.8.15",
-    category: "MOVIE",
-    title: "Movie Attack On Titan (1st part) - Crimson Bow and Arrow",
-    subtitle:
-      "Special report // Season 1 compilation film part one, documenting the initial fall of Wall Maria, the grueling Trainee Corps days, and the defense of Trost District.",
-    runtime: "119 MIN",
-    format: "THEATRICAL 4K REMASTER // 5.1ch",
-    posterUrl: "/aot.jpg",
-    gradient:
-      "radial-gradient(circle at 70% 30%, rgba(196, 30, 30, 0.45) 0%, rgba(138, 3, 3, 0.3) 45%, rgba(21, 21, 21, 0.95) 85%), linear-gradient(135deg, #151515 0%, #240a0a 55%, #5c0202 100%)",
-  },
-  {
-    id: "movie-v4",
-    version: "V4",
-    date: "2020.7.17",
-    category: "MOVIE",
-    title: "Attack on Titan: Chronicle",
-    subtitle:
-      "Special report // Definitive cinematic chronicle synthesizing the complete story arc of Seasons 1–3 into a singular theatrical experience before the final march.",
-    runtime: "122 MIN",
-    format: "CHRONICLE EDITION // 5.1ch",
-    posterUrl: "/ymir.jpg",
-    gradient:
-      "radial-gradient(circle at 75% 25%, rgba(160, 20, 20, 0.4) 0%, rgba(92, 2, 2, 0.3) 40%, rgba(18, 18, 18, 0.95) 80%), linear-gradient(135deg, #121212 0%, #1a0808 50%, #3d0505 100%)",
-  },
-  {
-    id: "movie-v5",
-    version: "V5",
-    date: "2018.1.13",
-    category: "MOVIE",
-    title: "Movie Attack On Titan: The Roar of Awakening",
-    subtitle:
-      "Special report // Season 2 theatrical recap chronicling the breach of Wall Rose, Utgard Castle siege, and the devastating revelation of the Colossal and Armored Titans.",
-    runtime: "120 MIN",
-    format: "THEATRICAL CUT // 5.1ch",
-    posterUrl: "/aot.jpg",
-    gradient:
-      "radial-gradient(circle at 80% 20%, rgba(196, 30, 30, 0.5) 0%, rgba(138, 3, 3, 0.3) 35%, rgba(21, 21, 21, 0.95) 75%), linear-gradient(135deg, #151515 0%, #200808 45%, #4d0606 100%)",
-  },
-];
+export const DEMO_MOVIES: MovieEntry[] = [];
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MovieGalleryTimeline Component
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function MovieGalleryTimeline({
-  movies = DEMO_MOVIES,
+  movies = [],
   className = "",
   onMovieSelect,
+  onAddMovie,
+  onDeleteMovie,
 }: MovieGalleryTimelineProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+
+  if (movies.length === 0) {
+    return (
+      <section
+        id="movies"
+        className={`relative w-full bg-aot-parchment text-aot-dark crack-overlay py-16 md:py-24 ${className}`}
+      >
+        <div className="mx-auto max-w-7xl px-4 md:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="w-8 h-[2px] bg-aot-blood inline-block" />
+                <span className="text-mono-xs text-aot-blood tracking-[0.3em] uppercase font-bold">
+                  THEATRICAL ARCHIVE // 劇場版
+                </span>
+              </div>
+              <h2 className="heading-brutal heading-brutal-xl">MOVIE GALLERY</h2>
+            </div>
+            {onAddMovie && (
+              <button
+                onClick={onAddMovie}
+                className="group relative flex items-center justify-center overflow-hidden aot-border bg-aot-parchment px-5 py-2.5 text-mono-xs transition-colors odm-trigger font-bold"
+              >
+                <span className="absolute inset-0 bg-aot-blood transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                <span className="relative z-10 flex items-center gap-2 text-aot-dark group-hover:text-white transition-colors">
+                  + ADD MOVIE RECORD
+                </span>
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="section-divider mt-6 mb-10" />
+        <div className="flex min-h-[300px] flex-col items-center justify-center text-center mx-auto max-w-7xl px-4 md:px-8">
+          <div className="mb-6 relative w-16 h-16 opacity-20">
+            <div className="absolute top-1/2 left-0 w-full h-[1px] bg-aot-dark -translate-y-1/2" />
+            <div className="absolute left-1/2 top-0 w-[1px] h-full bg-aot-dark -translate-x-1/2" />
+            <div className="absolute inset-2 border border-aot-dark rounded-full" />
+          </div>
+          <h3
+            className="mb-2 text-2xl font-bold tracking-widest text-aot-dark uppercase"
+            style={{ fontFamily: "var(--font-cinzel)" }}
+          >
+            NO THEATRICAL RECORDS
+          </h3>
+          <p className="max-w-md text-xs text-text-muted uppercase tracking-wider mt-2 mb-6 px-4">
+            No movie records or theatrical cuts have been added to the archive yet. Upload your custom theatrical posters and story debriefings.
+          </p>
+          {onAddMovie && (
+            <button
+              onClick={onAddMovie}
+              className="px-6 py-3 aot-border bg-aot-blood text-white hover:bg-aot-blood-bright text-mono-xs tracking-widest font-bold uppercase transition-colors flex items-center gap-2 shadow-lg"
+            >
+              <span>+ UPLOAD THEATRICAL RECORD</span>
+            </button>
+          )}
+        </div>
+      </section>
+    );
+  }
 
   const activeMovie = movies[activeIndex] || movies[0];
 
   return (
     <section
-      id="movie-gallery"
+      id="movies"
       className={`relative w-full bg-aot-parchment text-aot-dark crack-overlay py-16 md:py-24 ${className}`}
     >
       <div className="mx-auto max-w-7xl px-4 md:px-8">
@@ -132,12 +124,25 @@ export function MovieGalleryTimeline({
             </h2>
           </div>
 
-          <div className="text-mono-xs text-aot-grey-dark uppercase tracking-widest sm:text-right pb-1">
-            <span className="font-mono text-aot-dark font-bold">
-              RECORDS: 0{movies.length} ENTRIES
-            </span>
-            <div className="text-[10px] text-text-secondary font-mono tracking-wider mt-0.5">
-              TIMELINE // 2018 — 2025
+          <div className="flex items-center gap-4">
+            {onAddMovie && (
+              <button
+                onClick={onAddMovie}
+                className="group relative flex items-center justify-center overflow-hidden aot-border bg-aot-parchment px-4 py-2 text-mono-xs transition-colors odm-trigger font-bold text-aot-dark"
+              >
+                <span className="absolute inset-0 bg-aot-blood transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                <span className="relative z-10 flex items-center gap-1.5 group-hover:text-white transition-colors">
+                  + ADD MOVIE RECORD
+                </span>
+              </button>
+            )}
+            <div className="text-mono-xs text-aot-grey-dark uppercase tracking-widest sm:text-right pb-1">
+              <span className="font-mono text-aot-dark font-bold">
+                RECORDS: 0{movies.length} ENTRIES
+              </span>
+              <div className="text-[10px] text-text-secondary font-mono tracking-wider mt-0.5">
+                TIMELINE // {movies[0]?.date?.split(".")[0] || "ARCHIVE"}
+              </div>
             </div>
           </div>
         </div>
@@ -254,9 +259,25 @@ export function MovieGalleryTimeline({
                       <span>
                         SPEC: {activeMovie.format || "THEATRICAL 4K // 5.1ch"}
                       </span>
-                      <span className="text-aot-blood-bright tracking-wider flex items-center gap-1 font-mono">
-                        HOVER TIMELINE TO INSPECT
-                      </span>
+                      <div className="flex items-center gap-3">
+                        {onDeleteMovie && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (window.confirm(`Delete record "${activeMovie.title}"?`)) {
+                                onDeleteMovie(activeMovie.id);
+                              }
+                            }}
+                            className="px-2 py-0.5 border border-aot-blood text-aot-blood-bright hover:bg-aot-blood hover:text-white transition-colors text-[10px] uppercase font-bold"
+                          >
+                            DELETE RECORD
+                          </button>
+                        )}
+                        <span className="text-aot-blood-bright tracking-wider flex items-center gap-1 font-mono">
+                          HOVER TIMELINE TO INSPECT
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>

@@ -16,195 +16,35 @@ import {
 export interface AnimationPoster {
   id: string;
   title: string;
-  titleJp: string;
+  titleJp?: string;
   releaseDate: string;
-  episodeCount: string;
-  badge: string;
+  episodeCount?: string;
+  badge?: string;
   description: string;
-  classification: string;
-  studio: string;
-  director: string;
-  gradient: string;
+  classification?: string;
+  studio?: string;
+  director?: string;
+  gradient?: string;
   accentColor?: string;
-  kanjiWatermark: string;
+  kanjiWatermark?: string;
   broadcastInfo?: string;
+  posterUrl?: string;
 }
 
 export interface AnimationGalleryProps {
   items?: AnimationPoster[];
   initialIndex?: number;
   onSelectPoster?: (poster: AnimationPoster) => void;
+  onAddPoster?: () => void;
+  onDeletePoster?: (id: string) => void;
   className?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Demo Data — Official Attack on Titan Animation Portal Archives
+// Empty initial animation archives (User uploads their own records)
 // ═══════════════════════════════════════════════════════════════════════════
 
-export const DEMO_ANIMATION_POSTERS: AnimationPoster[] = [
-  {
-    id: "fs-part4",
-    title: "Attack on Titan - The Final Season Part 4",
-    titleJp: "進撃の巨人 The Final Season 完結編（後編）",
-    releaseDate: "2023.11.04",
-    episodeCount: "SPECIAL 02 (EP. 89-90)",
-    badge: "THE FINAL CHAPTER",
-    classification: "CLASS-S // RUMBLING TERMINATION",
-    studio: "MAPPA",
-    director: "Yuichiro Hayashi",
-    kanjiWatermark: "終尾の巨人",
-    broadcastInfo: "NHK GENERAL TV / 85 MINUTE THEATRICAL SPECIAL",
-    accentColor: "#c41e1e",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(138, 3, 3, 0.55) 0%, rgba(30, 8, 8, 0.95) 45%, #0d0d10 100%)",
-    description:
-      "The earth trembles under millions of Colossal Titans. Eren Yeager moves inexorably toward the obliteration of all life outside Paradis. The allied remnants of the Survey Corps and Marleyan Warriors launch their final desperate aerial assault atop Fort Salta.",
-  },
-  {
-    id: "fs-part3",
-    title: "Attack on Titan - The Final Season Part 3",
-    titleJp: "進撃の巨人 The Final Season 完結編（前編）",
-    releaseDate: "2023.03.03",
-    episodeCount: "SPECIAL 01 (EP. 88)",
-    badge: "THE RUMBLING",
-    classification: "CLASS-S // EXTINCTION EVENT",
-    studio: "MAPPA",
-    director: "Yuichiro Hayashi",
-    kanjiWatermark: "地鳴らし",
-    broadcastInfo: "NHK GENERAL TV / 60 MINUTE SPECIAL BROADCAST",
-    accentColor: "#8a0303",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(92, 2, 2, 0.6) 0%, rgba(20, 16, 24, 0.95) 50%, #0a0b10 100%)",
-    description:
-      "The Rumbling arrives at the mainland. Cities vanish under boiling steam and crushing steps. Hange Zoë makes the ultimate sacrifice to ensure the flying boat takes wing into the smoke-choked horizon.",
-  },
-  {
-    id: "fs-part2",
-    title: "The Final Season Part 2",
-    titleJp: "進撃の巨人 The Final Season Part 2",
-    releaseDate: "2022.01.09",
-    episodeCount: "12 EPISODES (EP. 76-87)",
-    badge: "FOUNDING TITAN",
-    classification: "CLASS-A // PATHS TRANSCENDENCE",
-    studio: "MAPPA",
-    director: "Yuichiro Hayashi",
-    kanjiWatermark: "始祖奪還",
-    broadcastInfo: "NHK GENERAL TV / WEEKLY SUNDAY BROADCAST",
-    accentColor: "#d4a843",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(212, 168, 67, 0.35) 0%, rgba(26, 21, 14, 0.9) 50%, #0a0a0f 100%)",
-    description:
-      "Shiganshina District becomes a tripartite warzone as Marley strikes Paradis from above. Within the ethereal Coordinates of the Paths, Eren and Zeke relive memories across 2,000 years of Eldian suffering.",
-  },
-  {
-    id: "fs-part1",
-    title: "The Final Season Part 1",
-    titleJp: "進撃の巨人 The Final Season Part 1",
-    releaseDate: "2020.12.06",
-    episodeCount: "16 EPISODES (EP. 60-75)",
-    badge: "WAR OF LIBERIO",
-    classification: "CLASS-A // CONTINENTAL INVASION",
-    studio: "MAPPA",
-    director: "Yuichiro Hayashi",
-    kanjiWatermark: "海の向こう",
-    broadcastInfo: "NHK GENERAL TV / WINTER BROADCAST",
-    accentColor: "#8c8fa3",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(140, 143, 163, 0.35) 0%, rgba(24, 25, 30, 0.95) 50%, #0c0d12 100%)",
-    description:
-      "Across the sea, the Marleyan Empire fights a grueling four-year war using Warrior candidates. The Survey Corps executes a surgical midnight assault on Liberio, signaling the dawn of the final battle.",
-  },
-  {
-    id: "season3-part2",
-    title: "Season 3 Part 2",
-    titleJp: "進撃の巨人 Season 3 Part.2",
-    releaseDate: "2019.04.28",
-    episodeCount: "10 EPISODES (EP. 50-59)",
-    badge: "RETAKE WALL MARIA",
-    classification: "CLASS-S // BASEMENT REVELATION",
-    studio: "WIT STUDIO",
-    director: "Tetsuro Araki / Masashi Koizuka",
-    kanjiWatermark: "奪還作戦",
-    broadcastInfo: "NHK GENERAL TV / SPRING COUR",
-    accentColor: "#4a7c59",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(74, 124, 89, 0.45) 0%, rgba(25, 32, 26, 0.95) 50%, #0b0f0d 100%)",
-    description:
-      "The decisive campaign to seal Wall Maria in Shiganshina. Erwin Smith leads the suicide charge against the Beast Titan while Levi strikes down Zeke. In the basement of the Yeager household, humanity discovers the photograph that changes everything.",
-  },
-  {
-    id: "season3-part1",
-    title: "Season 3 Part 1",
-    titleJp: "進撃の巨人 Season 3 Part.1",
-    releaseDate: "2018.07.22",
-    episodeCount: "12 EPISODES (EP. 38-49)",
-    badge: "UPRISING ARC",
-    classification: "CLASS-B // ROYAL DYNASTY OVERTHROW",
-    studio: "WIT STUDIO",
-    director: "Tetsuro Araki / Masashi Koizuka",
-    kanjiWatermark: "王政篇",
-    broadcastInfo: "NHK GENERAL TV / SUMMER COUR",
-    accentColor: "#6b6458",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(138, 130, 117, 0.35) 0%, rgba(28, 26, 23, 0.95) 50%, #0c0b0a 100%)",
-    description:
-      "Inside the walls, the Survey Corps is hunted by Kenny the Ripper and the Interior Military Police. Historia Reiss confronts her father beneath the crystal chapel, shattering generations of royal indoctrination.",
-  },
-  {
-    id: "season2",
-    title: "Season 2",
-    titleJp: "進撃の巨人 Season 2",
-    releaseDate: "2017.04.01",
-    episodeCount: "12 EPISODES (EP. 26-37)",
-    badge: "CLASH OF THE TITANS",
-    classification: "CLASS-A // INFILTRATOR IDENTIFIED",
-    studio: "WIT STUDIO",
-    director: "Tetsuro Araki / Masashi Koizuka",
-    kanjiWatermark: "咆哮",
-    broadcastInfo: "TOKYO MX / MBS / NATIONWIDE",
-    accentColor: "#8a0303",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(138, 3, 3, 0.45) 0%, rgba(26, 15, 20, 0.95) 50%, #0c0b0e 100%)",
-    description:
-      "Wall Rose is breached by Titans of mysterious origin. A desperate siege at Utgard Castle reveals Ymir's true identity, culminating in Reiner and Bertholdt's shocking rooftop betrayal atop Wall Rose.",
-  },
-  {
-    id: "chronicle",
-    title: "Attack on Titan - Chronicle",
-    titleJp: "「進撃の巨人」〜クロニクル〜",
-    releaseDate: "2020.07.17",
-    episodeCount: "THEATRICAL FILM (122 MINS)",
-    badge: "THEATRICAL ARCHIVE",
-    classification: "CLASS-A // TOTAL MILITARY DIGEST",
-    studio: "WIT STUDIO / PONY CANYON",
-    director: "Masashi Koizuka",
-    kanjiWatermark: "記録全編",
-    broadcastInfo: "TOHO CINEMAS / NATIONWIDE THEATRICAL ROADSHOW",
-    accentColor: "#3a5a40",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(58, 90, 64, 0.45) 0%, rgba(20, 26, 22, 0.95) 50%, #0a0d0b 100%)",
-    description:
-      "The definitive cinematic re-edit compiling the complete saga of Seasons 1 through 3. Remastered 5.1 surround sound and revised cuts chronicling humanity's struggle from the breach of Shiganshina to the shore of the ocean.",
-  },
-  {
-    id: "oad-archive",
-    title: "OAD Archive Collection",
-    titleJp: "進撃の巨人 OAD アーカイブ",
-    releaseDate: "2013-2018",
-    episodeCount: "8 EPISODES (SPECIAL DISC)",
-    badge: "OAD COLLECTION",
-    classification: "CLASS-B // CLASSIFIED FIELD NOTES",
-    studio: "WIT STUDIO",
-    director: "Tetsuro Araki",
-    kanjiWatermark: "外伝記録",
-    broadcastInfo: "ORIGINAL ANIMATION DVD BUNDLED ARCHIVES",
-    accentColor: "#b0a07a",
-    gradient:
-      "radial-gradient(ellipse at 50% 100%, rgba(176, 160, 122, 0.35) 0%, rgba(28, 24, 20, 0.95) 50%, #0c0b0a 100%)",
-    description:
-      "Declassified auxiliary operations including Ilse's Notebook, the two-part origins of Levi Ackermann in 'No Regrets', and Annie Leonhart's investigative assignment in 'Lost Girls'.",
-  },
-];
+export const DEMO_ANIMATION_POSTERS: AnimationPoster[] = [];
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Helper Functions
@@ -222,9 +62,11 @@ function getWrappedDiff(index: number, activeIndex: number, total: number): numb
 // ═══════════════════════════════════════════════════════════════════════════
 
 export default function AnimationGallery({
-  items = DEMO_ANIMATION_POSTERS,
+  items = [],
   initialIndex = 0,
   onSelectPoster,
+  onAddPoster,
+  onDeletePoster,
   className = "",
 }: AnimationGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(initialIndex);
@@ -254,6 +96,7 @@ export default function AnimationGallery({
   // Navigation handlers
   const navigate = useCallback(
     (newDirection: number) => {
+      if (items.length === 0) return;
       setDirection(newDirection);
       setActiveIndex((prev) => {
         const next = (prev + newDirection + items.length) % items.length;
@@ -276,7 +119,7 @@ export default function AnimationGallery({
 
   const navigateTo = useCallback(
     (targetIndex: number) => {
-      if (targetIndex === activeIndex) return;
+      if (items.length === 0 || targetIndex === activeIndex) return;
       const diff = getWrappedDiff(targetIndex, activeIndex, items.length);
       setDirection(diff > 0 ? 1 : -1);
       setActiveIndex(targetIndex);
@@ -328,6 +171,80 @@ export default function AnimationGallery({
     }
   };
 
+  if (items.length === 0) {
+    return (
+      <section
+        id="special"
+        className={`relative w-full bg-aot-parchment text-aot-dark overflow-hidden border-y aot-border py-12 md:py-20 select-none ${className}`}
+        aria-label="Animation Gallery"
+      >
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-12 z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-8 border-b aot-border">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="w-2 h-2 bg-aot-blood animate-pulse" />
+                <span className="text-mono-xs text-aot-blood font-bold tracking-[0.25em] uppercase">
+                  ARCHIVE SECTION 04 // ANIME CHRONICLES
+                </span>
+                <span className="text-aot-border hidden sm:inline">|</span>
+                <span className="text-mono-xs text-text-muted hidden sm:inline tracking-wider uppercase">
+                  CLASSIFIED MILITARY RECORD
+                </span>
+              </div>
+
+              <h2
+                className="heading-brutal heading-brutal-lg tracking-tight text-aot-dark"
+                style={{ fontFamily: "var(--font-cinzel)" }}
+              >
+                ANIMATION GALLERY
+              </h2>
+              <p className="text-xs md:text-sm text-text-secondary mt-1 font-serif tracking-widest opacity-80 uppercase">
+                進撃の巨人 // BROADCAST &amp; THEATRICAL RELEASES
+              </p>
+            </div>
+
+            {onAddPoster && (
+              <button
+                onClick={onAddPoster}
+                className="group relative flex items-center justify-center overflow-hidden aot-border bg-aot-parchment px-5 py-2.5 text-mono-xs transition-colors odm-trigger font-bold text-aot-dark"
+              >
+                <span className="absolute inset-0 bg-aot-blood transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                <span className="relative z-10 flex items-center gap-2 group-hover:text-white transition-colors">
+                  + ADD CHRONICLE POSTER
+                </span>
+              </button>
+            )}
+          </div>
+
+          <div className="flex min-h-[300px] flex-col items-center justify-center text-center mx-auto max-w-7xl px-4 md:px-8 py-8">
+            <div className="mb-6 relative w-16 h-16 opacity-20">
+              <div className="absolute top-1/2 left-0 w-full h-[1px] bg-aot-dark -translate-y-1/2" />
+              <div className="absolute left-1/2 top-0 w-[1px] h-full bg-aot-dark -translate-x-1/2" />
+              <div className="absolute inset-2 border border-aot-dark rounded-full" />
+            </div>
+            <h3
+              className="mb-2 text-2xl font-bold tracking-widest text-aot-dark uppercase"
+              style={{ fontFamily: "var(--font-cinzel)" }}
+            >
+              NO CHRONICLE ENTRIES
+            </h3>
+            <p className="max-w-md text-xs text-text-muted uppercase tracking-wider mt-2 mb-6 px-4">
+              The animation archives have no logged series or theatrical posters yet. Upload your custom animation files, art, and dossiers.
+            </p>
+            {onAddPoster && (
+              <button
+                onClick={onAddPoster}
+                className="px-6 py-3 aot-border bg-aot-blood text-white hover:bg-aot-blood-bright text-mono-xs tracking-widest font-bold uppercase transition-colors flex items-center gap-2 shadow-lg"
+              >
+                <span>+ UPLOAD CHRONICLE POSTER</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const currentPoster = items[activeIndex];
 
   const handleCardClick = (poster: AnimationPoster) => {
@@ -337,6 +254,7 @@ export default function AnimationGallery({
 
   return (
     <section
+      id="special"
       ref={galleryContainerRef}
       className={`relative w-full bg-aot-parchment text-aot-dark overflow-hidden border-y aot-border py-12 md:py-20 select-none ${className}`}
       aria-label="Animation Gallery Carousel"
@@ -392,8 +310,19 @@ export default function AnimationGallery({
             </p>
           </div>
 
-          {/* Right Header: Index Meter & Status */}
-          <div className="flex items-center gap-6">
+          {/* Right Header: Index Meter, Add Button & Status */}
+          <div className="flex items-center gap-4 sm:gap-6">
+            {onAddPoster && (
+              <button
+                onClick={onAddPoster}
+                className="group relative flex items-center justify-center overflow-hidden aot-border bg-aot-parchment px-4 py-2 text-mono-xs transition-colors odm-trigger font-bold text-aot-dark"
+              >
+                <span className="absolute inset-0 bg-aot-blood transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                <span className="relative z-10 flex items-center gap-1.5 group-hover:text-white transition-colors">
+                  + ADD POSTER
+                </span>
+              </button>
+            )}
             <div className="text-right">
               <p className="text-mono-xs text-text-muted uppercase tracking-widest">
                 ARCHIVE INDEX
@@ -524,9 +453,17 @@ export default function AnimationGallery({
                   >
                     {/* Poster Image Graphic Area (Dramatic dark gradient background) */}
                     <div
-                      className="absolute inset-0 w-full h-full"
-                      style={{ background: item.gradient }}
+                      className="absolute inset-0 w-full h-full overflow-hidden"
+                      style={{ background: item.gradient || "#151515" }}
                     >
+                      {item.posterUrl && (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={item.posterUrl}
+                          alt={item.title}
+                          className="absolute inset-0 w-full h-full object-cover opacity-85 group-hover:scale-105 transition-transform duration-500"
+                        />
+                      )}
                       {/* Geometric Brutalist Grid / Texture Lines */}
                       <div
                         className="absolute inset-0 opacity-15 pointer-events-none"
@@ -846,9 +783,17 @@ export default function AnimationGallery({
               <div className="flex flex-col md:flex-row gap-8 items-start">
                 {/* Poster Artwork Miniature on Left */}
                 <div
-                  className="w-full md:w-72 aspect-[2/3] shrink-0 border border-aot-border relative overflow-hidden shadow-lg"
-                  style={{ background: selectedPoster.gradient }}
+                  className="w-full md:w-72 aspect-[2/3] shrink-0 border border-aot-border relative overflow-hidden shadow-lg bg-aot-dark"
+                  style={{ background: selectedPoster.gradient || "#151515" }}
                 >
+                  {selectedPoster.posterUrl && (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={selectedPoster.posterUrl}
+                      alt={selectedPoster.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  )}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span
                       className="font-serif font-black text-white/[0.08] text-6xl select-none"
@@ -936,12 +881,28 @@ export default function AnimationGallery({
                     <span className="text-mono-xs text-text-muted">
                       PARADIS MILITARY INTELLIGENCE // DIVISION 04
                     </span>
-                    <button
-                      onClick={() => setSelectedPoster(null)}
-                      className="px-5 py-2.5 aot-border bg-aot-dark text-aot-parchment hover:bg-aot-blood text-mono-xs tracking-widest font-bold uppercase transition-colors"
-                    >
-                      CLOSE ARCHIVE
-                    </button>
+                    <div className="flex items-center gap-3">
+                      {onDeletePoster && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm(`Delete chronicle entry "${selectedPoster.title}"?`)) {
+                              onDeletePoster(selectedPoster.id);
+                              setSelectedPoster(null);
+                            }
+                          }}
+                          className="px-4 py-2 border border-aot-blood text-aot-blood hover:bg-aot-blood hover:text-white text-mono-xs tracking-widest font-bold uppercase transition-colors"
+                        >
+                          DELETE RECORD
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setSelectedPoster(null)}
+                        className="px-5 py-2.5 aot-border bg-aot-dark text-aot-parchment hover:bg-aot-blood text-mono-xs tracking-widest font-bold uppercase transition-colors"
+                      >
+                        CLOSE ARCHIVE
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

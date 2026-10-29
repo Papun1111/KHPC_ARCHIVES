@@ -14,9 +14,20 @@ import { GalleryModeToggle } from "@/components/GalleryModeToggle";
 import { EmbersBackground } from "@/components/EmbersBackground";
 import PageTransition from "@/components/PageTransition";
 import HeroParallax from "@/components/HeroParallax";
-import PickUpCarousel from "@/components/PickUpCarousel";
-import MovieGalleryTimeline from "@/components/MovieGalleryTimeline";
-import AnimationGalleryComponent from "@/components/AnimationGallery";
+import PickUpCarousel, { type PickUpItem } from "@/components/PickUpCarousel";
+import MovieGalleryTimeline, { type MovieEntry } from "@/components/MovieGalleryTimeline";
+import AnimationGalleryComponent, { type AnimationPoster } from "@/components/AnimationGallery";
+import ArchiveUploadModal, { type UploadTargetSection } from "@/components/ArchiveUploadModal";
+import {
+  getSavedPickUpItems,
+  savePickUpItems,
+  getSavedMovieItems,
+  saveMovieItems,
+  getSavedAnimationItems,
+  saveAnimationItems,
+  getSavedGalleryImages,
+  saveGalleryImages,
+} from "@/lib/archiveStorage";
 import { INSIGNIA_CONFIG, type InsigniaType, type GalleryMode } from "@/lib/constants";
 import type { ImageData } from "@/components/ImageCard";
 
@@ -31,9 +42,82 @@ export default function GalleryPage() {
   const [layoutMode, setLayoutMode] = useState<GalleryMode>("manga");
   const [appLoaded, setAppLoaded] = useState(false);
 
+  // User uploaded stories across featured sections (persisted to localStorage)
+  const [pickUpItems, setPickUpItems] = useState<PickUpItem[]>([]);
+  const [movieItems, setMovieItems] = useState<MovieEntry[]>([]);
+  const [animationItems, setAnimationItems] = useState<AnimationPoster[]>([]);
+
+  // Manual Archive Upload Modal
+  const [archiveModalOpen, setArchiveModalOpen] = useState(false);
+  const [archiveModalSection, setArchiveModalSection] = useState<UploadTargetSection>("pickup");
+
   // Sorting/Filtering State
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [selectedLabel, setSelectedLabel] = useState<InsigniaType | null>(null);
+
+  // Initialize saved records from localStorage on mount
+  useEffect(() => {
+    setPickUpItems(getSavedPickUpItems());
+    setMovieItems(getSavedMovieItems());
+    setAnimationItems(getSavedAnimationItems());
+    const saved = getSavedGalleryImages();
+    if (saved && saved.length > 0) {
+      setImages(saved);
+    }
+  }, []);
+
+  const openArchiveModal = useCallback((section: UploadTargetSection) => {
+    setArchiveModalSection(section);
+    setArchiveModalOpen(true);
+  }, []);
+
+  const handleAddPickUpItem = useCallback((item: PickUpItem) => {
+    setPickUpItems((prev) => {
+      const updated = [item, ...prev];
+      savePickUpItems(updated);
+      return updated;
+    });
+  }, []);
+
+  const handleDeletePickUpItem = useCallback((id: string) => {
+    setPickUpItems((prev) => {
+      const updated = prev.filter((it) => it.id !== id);
+      savePickUpItems(updated);
+      return updated;
+    });
+  }, []);
+
+  const handleAddMovieItem = useCallback((item: MovieEntry) => {
+    setMovieItems((prev) => {
+      const updated = [item, ...prev];
+      saveMovieItems(updated);
+      return updated;
+    });
+  }, []);
+
+  const handleDeleteMovieItem = useCallback((id: string) => {
+    setMovieItems((prev) => {
+      const updated = prev.filter((it) => it.id !== id);
+      saveMovieItems(updated);
+      return updated;
+    });
+  }, []);
+
+  const handleAddAnimationItem = useCallback((item: AnimationPoster) => {
+    setAnimationItems((prev) => {
+      const updated = [item, ...prev];
+      saveAnimationItems(updated);
+      return updated;
+    });
+  }, []);
+
+  const handleDeleteAnimationItem = useCallback((id: string) => {
+    setAnimationItems((prev) => {
+      const updated = prev.filter((it) => it.id !== id);
+      saveAnimationItems(updated);
+      return updated;
+    });
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -126,7 +210,11 @@ export default function GalleryPage() {
         );
         createdImages = await Promise.all(
           files.map(async (file, i) => {
-            const url = URL.createObjectURL(file);
+            const url = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result as string);
+              reader.readAsDataURL(file);
+            });
             const dims = await new Promise<{ w: number; h: number }>(
               (resolve) => {
                 const img = new window.Image();
@@ -151,7 +239,11 @@ export default function GalleryPage() {
         );
       }
 
-      setImages((prev) => [...createdImages, ...prev]);
+      setImages((prev) => {
+        const next = [...createdImages, ...prev];
+        saveGalleryImages(next);
+        return next;
+      });
     },
     []
   );
@@ -257,7 +349,11 @@ export default function GalleryPage() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <PickUpCarousel />
+          <PickUpCarousel
+            items={pickUpItems}
+            onAddItem={() => openArchiveModal("pickup")}
+            onDeleteItem={handleDeletePickUpItem}
+          />
         </motion.div>
 
         {/* ── Section Divider ── */}
@@ -270,7 +366,11 @@ export default function GalleryPage() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <MovieGalleryTimeline />
+          <MovieGalleryTimeline
+            movies={movieItems}
+            onAddMovie={() => openArchiveModal("movie")}
+            onDeleteMovie={handleDeleteMovieItem}
+          />
         </motion.div>
 
         {/* ── Section Divider ── */}
@@ -283,7 +383,11 @@ export default function GalleryPage() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          <AnimationGalleryComponent />
+          <AnimationGalleryComponent
+            items={animationItems}
+            onAddPoster={() => openArchiveModal("animation")}
+            onDeletePoster={handleDeleteAnimationItem}
+          />
         </motion.div>
 
         {/* ── Section Divider ── */}
@@ -347,6 +451,17 @@ export default function GalleryPage() {
                     {images.length.toString().padStart(3, "0")}
                   </p>
                 </div>
+
+                <button
+                  onClick={() => openArchiveModal("pickup")}
+                  className="group relative flex items-center justify-center overflow-hidden aot-border bg-aot-dark px-4 md:px-6 py-3 md:py-4 text-mono-xs transition-colors h-12 md:h-14 odm-trigger text-white shadow-sm"
+                  title="Upload custom story or poster into any section"
+                >
+                  <span className="absolute inset-0 bg-aot-blood transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                  <span className="relative z-10 flex items-center gap-2 font-bold tracking-wider">
+                    + NEW STORY / RECORD
+                  </span>
+                </button>
 
                 <button
                   onClick={() => setShowUpload(!showUpload)}
@@ -609,6 +724,16 @@ export default function GalleryPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ═══ Manual Archive Entry Modal ═══ */}
+      <ArchiveUploadModal
+        isOpen={archiveModalOpen}
+        onClose={() => setArchiveModalOpen(false)}
+        initialSection={archiveModalSection}
+        onAddPickUpItem={handleAddPickUpItem}
+        onAddMovieItem={handleAddMovieItem}
+        onAddAnimationItem={handleAddAnimationItem}
+      />
     </div>
   );
 }

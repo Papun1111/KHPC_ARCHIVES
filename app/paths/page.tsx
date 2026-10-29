@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { EmbersBackground } from "@/components/EmbersBackground";
 import type { ImageData } from "@/components/ImageCard";
 import { useRouter } from "next/navigation";
+import { getSavedGalleryImages } from "@/lib/archiveStorage";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // The Paths — Mind Map Page (Dark AoT Theme)
@@ -29,9 +30,20 @@ export default function PathsPage() {
                 ) || [],
             }))
           );
+        } else {
+          const saved = getSavedGalleryImages();
+          if (saved && saved.length > 0) {
+            setImages(saved);
+          }
         }
       })
-      .catch((e) => console.log("Failed to load images from memory", e));
+      .catch((e) => {
+        console.log("Failed to load images from memory, reading saved:", e);
+        const saved = getSavedGalleryImages();
+        if (saved && saved.length > 0) {
+          setImages(saved);
+        }
+      });
   }, []);
 
   const handleNodeClick = (imageOrEventName: ImageData | string) => {

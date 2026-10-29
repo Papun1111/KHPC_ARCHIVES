@@ -25,12 +25,16 @@ export interface PickUpItem {
 interface PickUpCarouselProps {
   items?: PickUpItem[];
   onSelectItem?: (item: PickUpItem) => void;
+  onAddItem?: () => void;
+  onDeleteItem?: (id: string) => void;
   className?: string;
 }
 
 export default function PickUpCarousel({
   items = [],
   onSelectItem,
+  onAddItem,
+  onDeleteItem,
   className = "",
 }: PickUpCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -156,20 +160,35 @@ export default function PickUpCarousel({
 
   if (items.length === 0) {
     return (
-      <section className={`relative w-full bg-aot-parchment text-aot-dark py-12 md:py-20 overflow-hidden crack-overlay ${className}`}>
+      <section id="pickup" className={`relative w-full bg-aot-parchment text-aot-dark py-12 md:py-20 overflow-hidden crack-overlay ${className}`}>
         <div className="relative mx-auto max-w-7xl px-4 md:px-8">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="w-8 h-[2px] bg-aot-blood" />
-            <span className="text-mono-xs text-aot-blood tracking-[0.25em] font-bold font-mono">
-              TOPICS &amp; ARCHIVE // 特集
-            </span>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="w-8 h-[2px] bg-aot-blood" />
+                <span className="text-mono-xs text-aot-blood tracking-[0.25em] font-bold font-mono">
+                  TOPICS &amp; ARCHIVE // 特集
+                </span>
+              </div>
+              <h2
+                className="heading-brutal heading-brutal-xl text-aot-dark tracking-tighter"
+                style={{ fontFamily: "var(--font-cinzel)" }}
+              >
+                PICK UP
+              </h2>
+            </div>
+            {onAddItem && (
+              <button
+                onClick={onAddItem}
+                className="group relative flex items-center justify-center overflow-hidden aot-border bg-aot-parchment px-5 py-2.5 text-mono-xs transition-colors odm-trigger font-bold"
+              >
+                <span className="absolute inset-0 bg-aot-blood transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                <span className="relative z-10 flex items-center gap-2 text-aot-dark group-hover:text-white transition-colors">
+                  + ADD STORY / RECORD
+                </span>
+              </button>
+            )}
           </div>
-          <h2
-            className="heading-brutal heading-brutal-xl text-aot-dark tracking-tighter"
-            style={{ fontFamily: "var(--font-cinzel)" }}
-          >
-            PICK UP
-          </h2>
         </div>
         <div className="section-divider mt-4" />
         <div className="flex min-h-[300px] flex-col items-center justify-center text-center mx-auto max-w-7xl px-4 md:px-8 py-12">
@@ -184,9 +203,17 @@ export default function PickUpCarousel({
           >
             NO FEATURED ITEMS
           </h3>
-          <p className="max-w-md text-xs text-text-muted uppercase tracking-wider mt-2 px-4">
-            Featured topics and archive entries will appear here once added.
+          <p className="max-w-md text-xs text-text-muted uppercase tracking-wider mt-2 mb-6 px-4">
+            The featured topics archive is currently empty. Upload your custom stories, event logs, or pictures to showcase here.
           </p>
+          {onAddItem && (
+            <button
+              onClick={onAddItem}
+              className="px-6 py-3 aot-border bg-aot-blood text-white hover:bg-aot-blood-bright text-mono-xs tracking-widest font-bold uppercase transition-colors flex items-center gap-2 shadow-lg"
+            >
+              <span>+ UPLOAD YOUR FIRST STORY</span>
+            </button>
+          )}
         </div>
       </section>
     );
@@ -194,6 +221,7 @@ export default function PickUpCarousel({
 
   return (
     <section
+      id="pickup"
       className={`relative w-full bg-aot-parchment text-aot-dark py-12 md:py-20 overflow-hidden crack-overlay ${className}`}
       onKeyDown={handleKeyDown}
       tabIndex={0}
@@ -220,8 +248,19 @@ export default function PickUpCarousel({
             </h2>
           </div>
 
-          {/* Right Status Indicator */}
+          {/* Right Status Indicator & Add Button */}
           <div className="flex items-center gap-4 text-mono-xs text-aot-grey-dark uppercase tracking-widest pb-2 font-mono">
+            {onAddItem && (
+              <button
+                onClick={onAddItem}
+                className="group relative flex items-center justify-center overflow-hidden aot-border bg-aot-parchment px-4 py-2 text-mono-xs transition-colors odm-trigger font-bold text-aot-dark"
+              >
+                <span className="absolute inset-0 bg-aot-blood transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                <span className="relative z-10 flex items-center gap-1.5 group-hover:text-white transition-colors">
+                  + ADD STORY
+                </span>
+              </button>
+            )}
             <span>
               LOGS: {String(activeIndex + 1).padStart(2, "0")} /{" "}
               {String(items.length).padStart(2, "0")}
@@ -486,13 +525,29 @@ export default function PickUpCarousel({
                     <span className="text-mono-xs text-aot-grey-dark font-mono">
                       CLASSIFIED STATUS // UNRESTRICTED
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setDetailItem(null)}
-                      className="px-4 py-2 bg-aot-dark text-aot-parchment text-mono-xs font-mono font-bold tracking-wider hover:bg-aot-blood transition-colors odm-trigger"
-                    >
-                      ACKNOWLEDGE
-                    </button>
+                    <div className="flex items-center gap-3">
+                      {onDeleteItem && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm("Remove this entry from the archive?")) {
+                              onDeleteItem(detailItem.id);
+                              setDetailItem(null);
+                            }
+                          }}
+                          className="px-3 py-2 border border-aot-blood text-aot-blood hover:bg-aot-blood hover:text-white text-mono-xs font-mono font-bold tracking-wider transition-colors"
+                        >
+                          DELETE RECORD
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setDetailItem(null)}
+                        className="px-4 py-2 bg-aot-dark text-aot-parchment text-mono-xs font-mono font-bold tracking-wider hover:bg-aot-blood transition-colors odm-trigger"
+                      >
+                        ACKNOWLEDGE
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
