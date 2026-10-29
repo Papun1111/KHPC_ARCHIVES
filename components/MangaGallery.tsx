@@ -12,7 +12,9 @@ interface MangaGalleryProps {
   onSelectImage?: (image: ImageData) => void;
 }
 
-// ─── MangaGallery Component ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// MangaGallery — Brutalist Parchment Manga Panel Bin-Packing Layout
+// ═══════════════════════════════════════════════════════════════════════════
 
 export function MangaGallery({ images, onSelectImage }: MangaGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -87,23 +89,22 @@ export function MangaGallery({ images, onSelectImage }: MangaGalleryProps) {
 
       {/* Empty state */}
       {images.length === 0 && (
-        <div className="flex min-h-[400px] flex-col items-center justify-center text-center">
+        <div className="flex min-h-[400px] flex-col items-center justify-center text-center p-8 border border-aot-border bg-aot-parchment">
           <div
-            className="mb-4 text-6xl opacity-20"
+            className="mb-4 text-6xl text-aot-grey-dark opacity-30"
             style={{ fontFamily: "var(--font-cinzel)" }}
           >
             ⬡
           </div>
           <h3
-            className="mb-2 text-xl"
+            className="mb-2 text-xl font-bold uppercase tracking-widest text-aot-dark"
             style={{
               fontFamily: "var(--font-cinzel)",
-              color: "#d4a843",
             }}
           >
             No Memories Yet
           </h3>
-          <p className="max-w-md text-sm" style={{ color: "#6b7280" }}>
+          <p className="max-w-md text-sm text-text-secondary" style={{ fontFamily: "var(--font-inter)" }}>
             Upload images to begin your expedition log. Each memory will be
             arranged in the manga panel layout.
           </p>

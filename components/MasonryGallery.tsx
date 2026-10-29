@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ImageCard, type ImageData } from "./ImageCard";
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MasonryGallery — Dark AoT Theme
+// MasonryGallery — Brutalist Parchment Theme
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface MasonryGalleryProps {
@@ -54,9 +54,9 @@ export function MasonryGallery({ images, onSelectImage, columns = 3 }: MasonryGa
   }
 
   return (
-    <div className="flex w-full gap-1">
+    <div className="flex w-full gap-2">
       {columnData.map((col, colIndex) => (
-        <div key={`col-${colIndex}`} className="flex flex-1 flex-col gap-1">
+        <div key={`col-${colIndex}`} className="flex flex-1 flex-col gap-2">
           <AnimatePresence mode="popLayout">
             {col.map((image, index) => (
               <motion.div

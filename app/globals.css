@@ -1,18 +1,33 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   KHPC ARCHIVES — Attack on Titan Dark-Fantasy Theme
+   KHPC ARCHIVES — Attack on Titan Brutalist Cinematic Theme
+   Inspired by the official AoT portal aesthetic
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @theme inline {
-  /* ── Core Backgrounds ── */
-  --color-background: #0a0b10;
-  --color-foreground: #e8e6e1;
-  --color-bg-secondary: #111318;
-  --color-bg-card: #15171e;
-  --color-bg-elevated: #1a1d26;
+  /* ── Core Parchment Palette ── */
+  --color-aot-parchment: #f4f4f0;
+  --color-aot-parchment-dark: #e8e8e4;
+  --color-aot-parchment-warm: #edeade;
+  --color-aot-dark: #151515;
+  --color-aot-dark-soft: #1e1e1e;
+  --color-aot-blood: #8a0303;
+  --color-aot-blood-bright: #c41e1e;
+  --color-aot-blood-deep: #5c0202;
+  --color-aot-grey: #d0d0cc;
+  --color-aot-grey-dark: #999996;
+  --color-aot-border: #c8c8c4;
+  --color-aot-border-dark: #a0a09c;
 
-  /* ── AoT Faction & Lore Colors ── */
+  /* ── Legacy mappings for existing components ── */
+  --color-background: #f4f4f0;
+  --color-foreground: #151515;
+  --color-bg-secondary: #edeade;
+  --color-bg-card: #f4f4f0;
+  --color-bg-elevated: #ffffff;
+
+  /* ── Faction & Lore Colors (kept for existing components) ── */
   --color-survey-green: #3a5a40;
   --color-survey-green-bright: #4a7c59;
   --color-wall-stone: #6b6458;
@@ -20,19 +35,20 @@
   --color-odm-iron: #8c8fa3;
   --color-odm-steel: #b0b3c5;
   --color-blood-red: #8a0303;
-  --color-blood-bright: #bc2020;
+  --color-blood-bright: #c41e1e;
   --color-parchment: #d4c5a0;
   --color-parchment-dark: #b0a07a;
   --color-titan-amber: #d4a843;
 
   /* ── Text ── */
-  --color-text-primary: #e8e6e1;
-  --color-text-secondary: #9a978f;
-  --color-text-muted: #5a584f;
+  --color-text-primary: #151515;
+  --color-text-secondary: #555555;
+  --color-text-muted: #999996;
 
   /* ── Typography ── */
   --font-inter: var(--font-inter), "Inter", sans-serif;
   --font-cinzel: var(--font-cinzel), "Cinzel", serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", "IBM Plex Mono", monospace;
 
   /* ── Custom Animations ── */
   --animate-ember-float: ember-float 6s ease-in-out infinite;
@@ -44,50 +60,101 @@
   --animate-crack: crack-reveal 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   --animate-flash-red: flash-red 0.3s ease-out;
   --animate-noise: noise 0.2s infinite;
+  --animate-dust-float: dust-float 12s ease-in-out infinite;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   BASE STYLES
+   BASE STYLES — Brutalist Parchment
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @layer base {
   html,
   body {
-    @apply bg-background text-foreground;
+    @apply bg-aot-parchment text-aot-dark;
     font-family: var(--font-inter);
-    background-color: #0a0b10;
-    /* Dark noise texture — aged parchment-on-dark effect */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
     overflow-x: hidden;
     scroll-behavior: smooth;
   }
 
-  /* ── Dark Scrollbar ── */
+  /* Full-page noise texture overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.35;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+
+  /* ── Minimal Scrollbar ── */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
   }
   ::-webkit-scrollbar-track {
-    background: #111318;
+    background: #f4f4f0;
   }
   ::-webkit-scrollbar-thumb {
-    background: #3a5a40;
-    border-radius: 3px;
+    background: #c8c8c4;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #8a0303;
   }
 
-  /* Firefox scrollbar */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #3a5a40 #111318;
+    scrollbar-color: #c8c8c4 #f4f4f0;
+  }
+
+  /* Selection color */
+  ::selection {
+    background: rgba(138, 3, 3, 0.2);
+    color: #151515;
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    KEYFRAME ANIMATIONS
    ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Blood scribble draw ── */
+@keyframes scribble-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* ── Dust floating particles ── */
+@keyframes dust-float {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-30vh) translateX(20px) rotate(180deg);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-60vh) translateX(-15px) rotate(360deg);
+    opacity: 0;
+  }
+}
 
 /* ── Embers: Floating battlefield particles ── */
 @keyframes ember-float {
@@ -108,7 +175,7 @@
   }
 }
 
-/* ── Steam: Titan transformation steam dissipation ── */
+/* ── Steam ── */
 @keyframes steam-rise {
   0% {
     transform: translateY(0) scaleX(1);
@@ -124,7 +191,7 @@
   }
 }
 
-/* ── Scan Line: Military scanner horizontal sweep ── */
+/* ── Scan Line ── */
 @keyframes scan-line {
   0% {
     transform: translateY(-100%);
@@ -145,7 +212,7 @@
   }
 }
 
-/* ── Gear Click: Mechanical ODM trigger snap ── */
+/* ── Gear Click ── */
 @keyframes gear-click {
   0% {
     transform: scale(1);
@@ -158,15 +225,15 @@
   }
 }
 
-/* ── Parchment Fade: Aged document reveal ── */
+/* ── Parchment Fade ── */
 @keyframes parchment-fade {
   0% {
     opacity: 0;
-    filter: sepia(100%) brightness(0.6);
+    filter: sepia(80%) brightness(0.8);
     transform: translateY(8px);
   }
   60% {
-    filter: sepia(40%) brightness(0.9);
+    filter: sepia(20%) brightness(0.95);
   }
   100% {
     opacity: 1;
@@ -175,7 +242,7 @@
   }
 }
 
-/* ── Metallic Sheen: Sweep across element ── */
+/* ── Metallic Sheen ── */
 @keyframes metallic-sheen {
   0% {
     background-position: -200% center;
@@ -185,7 +252,7 @@
   }
 }
 
-/* ── Blood Drip (kept from original) ── */
+/* ── Blood Drip ── */
 @keyframes blood-drip {
   0% {
     transform: scaleY(0);
@@ -197,7 +264,7 @@
   }
 }
 
-/* ── Crack Reveal (kept from original) ── */
+/* ── Crack Reveal ── */
 @keyframes crack-reveal {
   0% {
     clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%);
@@ -213,20 +280,20 @@
   }
 }
 
-/* ── Flash Red (kept from original) ── */
+/* ── Flash Red ── */
 @keyframes flash-red {
   0% {
     background-color: transparent;
   }
   10% {
-    background-color: #8a0303;
+    background-color: rgba(138, 3, 3, 0.2);
   }
   100% {
     background-color: transparent;
   }
 }
 
-/* ── Noise (kept from original) ── */
+/* ── Noise ── */
 @keyframes noise {
   0% { transform: translate(0,0) }
   10% { transform: translate(-5%,-5%) }
@@ -241,13 +308,13 @@
   100% { transform: translate(5%,0) }
 }
 
-/* ── Pulse Glow ── */
+/* ── Pulse Glow (blood variant) ── */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 5px rgba(58, 90, 64, 0.3);
+    box-shadow: 0 0 5px rgba(138, 3, 3, 0.15);
   }
   50% {
-    box-shadow: 0 0 20px rgba(58, 90, 64, 0.6), 0 0 40px rgba(58, 90, 64, 0.2);
+    box-shadow: 0 0 20px rgba(138, 3, 3, 0.3), 0 0 40px rgba(138, 3, 3, 0.1);
   }
 }
 
@@ -260,42 +327,220 @@
   animation: typewriter-blink 0.8s ease-in-out infinite;
 }
 
+/* ── Crosshair pulse ── */
+@keyframes crosshair-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BRUTALIST BORDER & STRUCTURAL SYSTEM
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Thin-line Borders (parchment theme) ── */
+.aot-border {
+  border: 1px solid #c8c8c4;
+}
+.aot-border-b {
+  border-bottom: 1px solid #c8c8c4;
+}
+.aot-border-t {
+  border-top: 1px solid #c8c8c4;
+}
+.aot-border-l {
+  border-left: 1px solid #c8c8c4;
+}
+.aot-border-r {
+  border-right: 1px solid #c8c8c4;
+}
+.aot-border-light {
+  border: 1px solid rgba(200, 200, 196, 0.5);
+}
+
+/* Legacy mappings */
+.sharp-border {
+  border: 1px solid #c8c8c4;
+}
+.sharp-border-b {
+  border-bottom: 1px solid #c8c8c4;
+}
+
+/* ── Crosshair / Viewfinder Corners ── */
+.crosshair-corners {
+  position: relative;
+}
+.crosshair-corners::before,
+.crosshair-corners::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  z-index: 5;
+}
+/* Top-left + Bottom-right */
+.crosshair-corners::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid #999996;
+  border-left: 2px solid #999996;
+}
+.crosshair-corners::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid #999996;
+  border-right: 2px solid #999996;
+}
+
+/* All four corners variant */
+.crosshair-corners-all {
+  position: relative;
+}
+.crosshair-corners-all::before,
+.crosshair-corners-all::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+}
+.crosshair-corners-all::before {
+  top: -1px;
+  left: -1px;
+  width: 16px;
+  height: 16px;
+  border-top: 2px solid #999996;
+  border-left: 2px solid #999996;
+  /* Also render bottom-right via box-shadow */
+  box-shadow: 
+    calc(100% - 14px) calc(100% - 14px) 0 -14px #999996;
+}
+.crosshair-corners-all::after {
+  top: -1px;
+  right: -1px;
+  width: 16px;
+  height: 16px;
+  border-top: 2px solid #999996;
+  border-right: 2px solid #999996;
+}
+
+/* Inner crosshair lines (+ shape) for gallery cards */
+.crosshair-inner {
+  position: relative;
+}
+.crosshair-inner::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 12px;
+  height: 1px;
+  background: rgba(153, 153, 150, 0.6);
+  z-index: 5;
+  pointer-events: none;
+  box-shadow: 0 0 0 0 transparent;
+}
+.crosshair-inner::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 13px;
+  width: 1px;
+  height: 12px;
+  background: rgba(153, 153, 150, 0.6);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ── Section Divider Lines ── */
+.section-divider {
+  width: 100%;
+  height: 1px;
+  background: #c8c8c4;
+}
+.section-divider-vertical {
+  width: 1px;
+  height: 100%;
+  background: #c8c8c4;
+}
+
+/* ── Crack Texture Overlay (decorative) ── */
+.crack-overlay {
+  position: relative;
+}
+.crack-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 600'%3E%3Cpath d='M150,0 L148,50 L155,80 L140,120 L152,170 L145,220 L160,280 L142,330 L155,380 L138,430 L150,480 L143,530 L155,580 L148,600' fill='none' stroke='%23666' stroke-width='1.5'/%3E%3Cpath d='M152,170 L170,200 L180,250' fill='none' stroke='%23666' stroke-width='1'/%3E%3Cpath d='M140,120 L120,145 L110,180' fill='none' stroke='%23666' stroke-width='0.8'/%3E%3Cpath d='M155,380 L175,400 L190,440' fill='none' stroke='%23666' stroke-width='0.8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY — Brutalist Scale
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Dramatic Section Headings ── */
+.heading-brutal {
+  font-family: var(--font-cinzel);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  color: #151515;
+}
+.heading-brutal-xl {
+  font-size: clamp(3rem, 8vw, 7rem);
+}
+.heading-brutal-lg {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+}
+.heading-brutal-md {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+/* ── Monospace UI Text ── */
+.text-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+.text-mono-sm {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.text-mono-xs {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    COMPONENT UTILITY CLASSES
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Wall-Stone Borders ── */
-.aot-border {
-  border: 1px solid #3a3830;
-}
-.aot-border-b {
-  border-bottom: 1px solid #3a3830;
-}
-.aot-border-light {
-  border: 1px solid rgba(107, 100, 88, 0.3);
-}
-
-/* Legacy sharp-border (remapped to dark theme) */
-.sharp-border {
-  border: 1px solid #3a3830;
-}
-.sharp-border-b {
-  border-bottom: 1px solid #3a3830;
-}
-
 /* ── Focus Outlines ── */
 *:focus-visible {
-  outline: 2px solid #3a5a40;
+  outline: 2px solid #8a0303;
   outline-offset: 2px;
 }
 
-/* ── Hover Glow Effects ── */
+/* ── Hover Effects ── */
 .hover-glow-text {
   transition: text-shadow 0.3s ease, color 0.3s ease;
 }
 .hover-glow-text:hover {
-  text-shadow: 0 0 10px rgba(58, 90, 64, 0.8), 0 0 20px rgba(58, 90, 64, 0.4);
-  color: #4a7c59;
+  text-shadow: 0 0 10px rgba(138, 3, 3, 0.3);
+  color: #8a0303;
 }
 
 .hover-glow-red {
@@ -303,25 +548,25 @@
 }
 .hover-glow-red:hover {
   text-shadow: 0 0 10px rgba(138, 3, 3, 0.8), 0 0 20px rgba(138, 3, 3, 0.5);
-  color: #bc2020;
+  color: #c41e1e;
 }
 
 .hover-glow-text-white {
   transition: text-shadow 0.3s ease, color 0.3s ease;
 }
 .hover-glow-text-white:hover {
-  text-shadow: 0 0 10px rgba(232, 230, 225, 0.6), 0 0 20px rgba(232, 230, 225, 0.3);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.3);
   color: #ffffff;
 }
 
-/* ── Metallic Sheen ── */
+/* ── Metallic Sheen (brutalist variant) ── */
 .aot-metallic {
   background: linear-gradient(
     110deg,
     transparent 20%,
-    rgba(176, 179, 197, 0.08) 40%,
-    rgba(176, 179, 197, 0.15) 50%,
-    rgba(176, 179, 197, 0.08) 60%,
+    rgba(200, 200, 196, 0.15) 40%,
+    rgba(200, 200, 196, 0.25) 50%,
+    rgba(200, 200, 196, 0.15) 60%,
     transparent 80%
   );
   background-size: 200% 100%;
@@ -330,7 +575,7 @@
   animation: metallic-sheen 0.8s ease-out;
 }
 
-/* ── ODM Trigger Button ── */
+/* ── ODM Trigger Button (parchment theme) ── */
 .odm-trigger {
   position: relative;
   transition: transform 0.1s ease, box-shadow 0.2s ease;
@@ -339,28 +584,349 @@
   animation: gear-click 0.15s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .odm-trigger:hover {
-  box-shadow: 0 0 15px rgba(58, 90, 64, 0.3), inset 0 1px 0 rgba(176, 179, 197, 0.15);
+  box-shadow: 0 0 15px rgba(138, 3, 3, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* ── Card Styles (parchment) ── */
+.aot-card {
+  background-color: #f4f4f0;
+  border: 1px solid #c8c8c4;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.aot-card:hover {
+  border-color: #999996;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* ── Parchment Background ── */
 .aot-parchment-bg {
-  background-color: #1a1915;
+  background-color: #f4f4f0;
   background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.06'/%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
-/* ── Card Styles ── */
-.aot-card {
-  background-color: #15171e;
-  border: 1px solid #3a3830;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-.aot-card:hover {
-  border-color: #4a7c59;
-  box-shadow: 0 0 20px rgba(58, 90, 64, 0.15);
+/* ── Dark Card (for fullscreen nav, etc.) ── */
+.aot-card-dark {
+  background-color: #151515;
+  border: 1px solid #333;
+  color: #f4f4f0;
 }
 
-/* ── Ember Particle (CSS-only, supplementary) ── */
+/* ── Cinematic Hover Card (+ icon overlay) ── */
+.cinematic-hover {
+  position: relative;
+  overflow: hidden;
+}
+.cinematic-hover .hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 10;
+}
+.cinematic-hover:hover .hover-overlay {
+  opacity: 1;
+}
+.cinematic-hover .hover-overlay .plus-icon {
+  width: 32px;
+  height: 32px;
+  position: relative;
+}
+.cinematic-hover .hover-overlay .plus-icon::before,
+.cinematic-hover .hover-overlay .plus-icon::after {
+  content: "";
+  position: absolute;
+  background: #fff;
+}
+.cinematic-hover .hover-overlay .plus-icon::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+.cinematic-hover .hover-overlay .plus-icon::after {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+.cinematic-hover img {
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.cinematic-hover:hover img {
+  transform: scale(1.05);
+}
+
+/* ── Blood splatter decorations ── */
+.blood-splatter-left {
+  position: relative;
+}
+.blood-splatter-left::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 400'%3E%3Cpath d='M0,50 Q30,45 20,80 Q10,100 30,120 Q50,140 15,170 Q-10,200 20,240 Q40,260 10,290 Q-5,310 25,340 Q45,360 5,400' fill='%238a0303' opacity='0.6'/%3E%3Cpath d='M10,0 Q40,30 25,60 Q10,90 35,110 Q55,130 20,160' fill='%238a0303' opacity='0.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.blood-splatter-right {
+  position: relative;
+}
+.blood-splatter-right::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 400'%3E%3Cpath d='M150,30 Q120,50 130,80 Q140,110 120,140 Q100,170 135,200 Q160,230 125,260 Q100,290 140,320 Q155,350 130,400' fill='%238a0303' opacity='0.6'/%3E%3Cpath d='M140,0 Q110,25 125,50 Q140,75 115,100' fill='%238a0303' opacity='0.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PANORAMA / DRAG CAROUSEL
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.panorama-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  scrollbar-width: thin;
+  scrollbar-color: #c8c8c4 #f4f4f0;
+}
+.panorama-scroll:active {
+  cursor: grabbing;
+}
+.panorama-scroll::-webkit-scrollbar {
+  height: 3px;
+}
+.panorama-scroll::-webkit-scrollbar-track {
+  background: #f4f4f0;
+}
+.panorama-scroll::-webkit-scrollbar-thumb {
+  background: #c8c8c4;
+}
+
+/* ── Collage desk texture (light variant) ── */
+.collage-desk {
+  background-color: #edeade;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(200, 200, 196, 0.2) 60px,
+      rgba(200, 200, 196, 0.2) 61px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 60px,
+      rgba(200, 200, 196, 0.15) 60px,
+      rgba(200, 200, 196, 0.15) 61px
+    );
+}
+
+/* ── Carousel dots ── */
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c8c8c4;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.carousel-dot.active {
+  background: #8a0303;
+  box-shadow: 0 0 8px rgba(138, 3, 3, 0.4);
+  transform: scale(1.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TIMELINE COMPONENT
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.timeline-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #c8c8c4;
+}
+
+.timeline-entry {
+  position: relative;
+  padding-left: 24px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e8e8e4;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+.timeline-entry:hover {
+  background-color: rgba(138, 3, 3, 0.03);
+}
+.timeline-entry::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 28px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c8c8c4;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.timeline-entry:hover::before {
+  background: #8a0303;
+  box-shadow: 0 0 8px rgba(138, 3, 3, 0.4);
+}
+.timeline-entry.active::before {
+  background: #8a0303;
+  box-shadow: 0 0 8px rgba(138, 3, 3, 0.4);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NAVIGATION BRUTALIST STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.nav-link-brutal {
+  font-family: var(--font-inter);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #555555;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-link-brutal:hover {
+  color: #151515;
+}
+.nav-link-brutal.active {
+  color: #151515;
+  font-weight: 600;
+}
+.nav-link-brutal .nav-icon {
+  width: 14px;
+  height: 14px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  line-height: 1;
+}
+
+/* ── Hamburger button ── */
+.hamburger-box {
+  width: 56px;
+  height: 56px;
+  border-left: 1px solid #c8c8c4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background: #f4f4f0;
+}
+.hamburger-box:hover {
+  background: #e8e8e4;
+}
+.hamburger-line {
+  width: 22px;
+  height: 1.5px;
+  background: #151515;
+  transition: all 0.3s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REACT FLOW OVERRIDES (kept for /paths page)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.react-flow__bg {
+  background-color: #f4f4f0 !important;
+}
+
+.react-flow__controls button {
+  background-color: #f4f4f0 !important;
+  border: 1px solid #c8c8c4 !important;
+  border-radius: 0 !important;
+  fill: #151515 !important;
+}
+
+.react-flow__controls button:hover {
+  background-color: #e8e8e4 !important;
+  fill: #8a0303 !important;
+}
+
+.react-flow__minimap {
+  background-color: #f4f4f0 !important;
+  border: 1px solid #c8c8c4 !important;
+  border-radius: 0 !important;
+}
+
+.react-flow__minimap-mask {
+  fill: rgba(244, 244, 240, 0.6) !important;
+}
+
+.react-flow__minimap-node {
+  border-radius: 0 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DUST / PARTICLE EFFECT (replaces embers on light theme)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.aot-dust {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(153, 153, 150, 0.5);
+  animation: dust-float 12s ease-in-out infinite;
+  pointer-events: none;
+}
+.aot-dust:nth-child(2n) {
+  background: rgba(138, 3, 3, 0.3);
+  animation-duration: 15s;
+  animation-delay: 2s;
+  width: 3px;
+  height: 3px;
+}
+.aot-dust:nth-child(3n) {
+  background: rgba(200, 200, 196, 0.6);
+  animation-duration: 18s;
+  animation-delay: 4s;
+}
+
+/* ── Ember kept for legacy ── */
 .aot-ember {
   position: absolute;
   width: 3px;
@@ -371,18 +937,6 @@
   animation: ember-float 6s ease-in-out infinite;
   pointer-events: none;
 }
-.aot-ember:nth-child(2n) {
-  background: #bc2020;
-  box-shadow: 0 0 6px 2px rgba(188, 32, 32, 0.5);
-  animation-duration: 8s;
-  animation-delay: 1s;
-}
-.aot-ember:nth-child(3n) {
-  background: #ff6400;
-  box-shadow: 0 0 6px 2px rgba(255, 100, 0, 0.5);
-  animation-duration: 7s;
-  animation-delay: 2s;
-}
 
 /* ── Scan Line Overlay ── */
 .aot-scan-line::after {
@@ -391,8 +945,8 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(58, 90, 64, 0.5), transparent);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200, 200, 196, 0.6), transparent);
   animation: scan-line 4s linear infinite;
   pointer-events: none;
   z-index: 10;
@@ -406,105 +960,22 @@
   left: 10%;
   right: 10%;
   height: 60px;
-  background: radial-gradient(ellipse at bottom, rgba(180, 180, 180, 0.15), transparent);
+  background: radial-gradient(ellipse at bottom, rgba(200, 200, 196, 0.2), transparent);
   animation: steam-rise 4s ease-out infinite;
   pointer-events: none;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   REACT FLOW OVERRIDES (Dark Theme)
+   RESPONSIVE UTILITIES
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.react-flow__bg {
-  background-color: #0a0b10 !important;
-}
-
-.react-flow__controls button {
-  background-color: #15171e !important;
-  border: 1px solid #3a3830 !important;
-  border-radius: 0 !important;
-  fill: #e8e6e1 !important;
-}
-
-.react-flow__controls button:hover {
-  background-color: #3a5a40 !important;
-  fill: #ffffff !important;
-}
-
-.react-flow__minimap {
-  background-color: #111318 !important;
-  border: 1px solid #3a3830 !important;
-  border-radius: 0 !important;
-}
-
-.react-flow__minimap-mask {
-  fill: rgba(10, 11, 16, 0.6) !important;
-}
-
-.react-flow__minimap-node {
-  border-radius: 0 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   GALLERY-SPECIFIC STYLES
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ── Panorama horizontal scroll ── */
-.panorama-scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  cursor: grab;
-  scrollbar-width: thin;
-  scrollbar-color: #3a5a40 #111318;
-}
-.panorama-scroll:active {
-  cursor: grabbing;
-}
-.panorama-scroll::-webkit-scrollbar {
-  height: 4px;
-}
-.panorama-scroll::-webkit-scrollbar-track {
-  background: #111318;
-}
-.panorama-scroll::-webkit-scrollbar-thumb {
-  background: #3a5a40;
-  border-radius: 2px;
-}
-
-/* ── Collage desk texture ── */
-.collage-desk {
-  background-color: #1a1712;
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 60px,
-      rgba(58, 54, 48, 0.15) 60px,
-      rgba(58, 54, 48, 0.15) 61px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 60px,
-      rgba(58, 54, 48, 0.1) 60px,
-      rgba(58, 54, 48, 0.1) 61px
-    ),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='wood'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04 0.8' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23wood)' opacity='0.08'/%3E%3C/svg%3E");
-}
-
-/* ── Carousel dot indicators ── */
-.carousel-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #3a3830;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-.carousel-dot.active {
-  background: #3a5a40;
-  box-shadow: 0 0 8px rgba(58, 90, 64, 0.6);
-  transform: scale(1.3);
+@media (max-width: 768px) {
+  .crosshair-corners::before,
+  .crosshair-corners::after {
+    width: 10px;
+    height: 10px;
+  }
+  .heading-brutal-xl {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
 }

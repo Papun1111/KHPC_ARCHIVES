@@ -12,126 +12,16 @@ import CarouselGallery from "@/components/CarouselGallery";
 import { UploadZone } from "@/components/UploadZone";
 import { GalleryModeToggle } from "@/components/GalleryModeToggle";
 import { EmbersBackground } from "@/components/EmbersBackground";
-import { FactionCrest } from "@/components/FactionCrest";
+import PageTransition from "@/components/PageTransition";
+import HeroParallax from "@/components/HeroParallax";
+import PickUpCarousel from "@/components/PickUpCarousel";
+import MovieGalleryTimeline from "@/components/MovieGalleryTimeline";
+import AnimationGalleryComponent from "@/components/AnimationGallery";
 import { INSIGNIA_CONFIG, type InsigniaType, type GalleryMode } from "@/lib/constants";
 import type { ImageData } from "@/components/ImageCard";
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Cinematic Loader — Titan Transformation Sequence
-// ═══════════════════════════════════════════════════════════════════════════
-
-function CinematicLoader({ onComplete }: { onComplete: () => void }) {
-  const [stage, setStage] = useState(0);
-
-  useEffect(() => {
-    setTimeout(() => setStage(1), 500);
-    setTimeout(() => setStage(2), 1500);
-    setTimeout(() => {
-      setStage(3);
-      setTimeout(onComplete, 800);
-    }, 2800);
-  }, [onComplete]);
-
-  return (
-    <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
-      style={{ background: "#0a0b10" }}
-      initial={{ opacity: 1 }}
-      animate={{ opacity: stage === 3 ? 0 : 1 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
-      onAnimationComplete={(definition) => {
-        if (
-          typeof definition === "object" &&
-          definition !== null &&
-          "opacity" in definition &&
-          (definition as Record<string, unknown>).opacity === 0
-        ) {
-          document.body.style.overflow = "auto";
-        }
-      }}
-    >
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(58, 90, 64, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(58, 90, 64, 0.3) 1px, transparent 1px)",
-          backgroundSize: "100px 100px",
-        }}
-      />
-
-      {/* Crack lines */}
-      <motion.svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        preserveAspectRatio="none"
-        viewBox="0 0 100 100"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: stage >= 1 ? 0.6 : 0 }}
-      >
-        <motion.path
-          d="M -10,30 Q 20,40 30,20 T 60,50 T 110,40"
-          fill="none"
-          stroke="#3a5a40"
-          strokeWidth="0.3"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: stage >= 1 ? 1 : 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        />
-        <motion.path
-          d="M 30,20 Q 40,0 50,-10"
-          fill="none"
-          stroke="#8a0303"
-          strokeWidth="0.2"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: stage >= 1 ? 1 : 0 }}
-          transition={{ duration: 0.2, delay: 0.2 }}
-        />
-      </motion.svg>
-
-      {/* Blood/Titan transformation flash */}
-      <motion.div
-        className="absolute w-[120vw] h-[50vh]"
-        style={{
-          background: "linear-gradient(180deg, rgba(138,3,3,0.8) 0%, rgba(188,32,32,0.6) 50%, rgba(212,168,67,0.4) 100%)",
-          clipPath:
-            "polygon(0% 45%, 15% 42%, 25% 48%, 35% 38%, 45% 55%, 55% 35%, 65% 50%, 75% 40%, 85% 52%, 100% 45%, 100% 55%, 85% 62%, 75% 50%, 65% 60%, 55% 45%, 45% 65%, 35% 48%, 25% 58%, 15% 52%, 0% 55%)",
-          filter: "blur(2px) contrast(150%)",
-        }}
-        initial={{ scaleY: 0, opacity: 0 }}
-        animate={{
-          scaleY: stage >= 2 ? 1 : 0,
-          opacity: stage >= 2 ? 0.9 : 0,
-        }}
-        transition={{ type: "spring", stiffness: 400, damping: 20 }}
-      />
-
-      {/* Title */}
-      <motion.div
-        className="absolute z-10 text-center"
-        initial={{ scale: 1.1, opacity: 0 }}
-        animate={{ scale: 1, opacity: stage >= 1 ? 1 : 0 }}
-        transition={{ duration: 3, ease: "easeOut" }}
-      >
-        {/* Wings of Freedom */}
-        <div className="flex justify-center mb-4 text-survey-green-bright opacity-60">
-          <FactionCrest type="survey" size={48} />
-        </div>
-        <h1
-          className="text-[clamp(2.5rem,8vw,6rem)] font-black text-text-primary tracking-tighter"
-          style={{ fontFamily: "var(--font-cinzel)" }}
-        >
-          KHPC アーカイブ
-        </h1>
-        <p className="mt-2 md:mt-4 text-[10px] sm:text-xs md:text-lg tracking-[0.4em] text-parchment-dark font-bold uppercase">
-          KHPC Archives
-        </p>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Gallery Page — Full AoT Dark-Fantasy Theme
+// Main Page — AoT Brutalist Portal
 // ═══════════════════════════════════════════════════════════════════════════
 
 export default function GalleryPage() {
@@ -154,7 +44,7 @@ export default function GalleryPage() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden"; // Prevent scrolling during cinematic
+    document.body.style.overflow = "hidden"; // Prevent scrolling during transition
   }, []);
 
   // Fetch from Prisma API (graceful fallback if Prisma isn't ready)
@@ -324,89 +214,117 @@ export default function GalleryPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-background !overflow-x-hidden">
-      {/* Cinematic Loader */}
+    <div className="relative min-h-screen bg-aot-parchment !overflow-x-hidden">
+      {/* ═══ Page Transition (Blood Scribbles) ═══ */}
       <AnimatePresence>
         {!appLoaded && (
-          <CinematicLoader onComplete={() => setAppLoaded(true)} />
+          <PageTransition onComplete={() => {
+            setAppLoaded(true);
+            document.body.style.overflow = "auto";
+          }} />
         )}
       </AnimatePresence>
 
-      {/* ── Embers & Steam Background ── */}
+      {/* ── Subtle Dust Particles Background ── */}
       {appLoaded && <EmbersBackground />}
 
-      {/* ── Background Image Layer (aot.jpg) ── */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none transition-opacity duration-1000"
-        style={{
-          opacity: appLoaded ? 0.15 : 0,
-          backgroundImage: "url('/aot.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundAttachment: "fixed",
-          filter: "grayscale(50%) contrast(120%) brightness(0.4)",
-        }}
-      />
+      {/* ── Noise texture is applied via body::before in globals.css ── */}
 
-      {/* Grid pattern overlay */}
-      <div
-        className="pointer-events-none fixed inset-0 opacity-[0.04] z-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(58, 90, 64, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(58, 90, 64, 0.5) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      {/* Decorative vertical lines */}
-      <div className="pointer-events-none fixed py-10 inset-y-0 left-[5%] md:left-[10%] w-[1px] bg-survey-green/10 z-0" />
-      <div className="pointer-events-none fixed py-10 inset-y-0 right-[5%] md:right-[10%] w-[1px] bg-survey-green/10 z-0" />
+      {/* ── Decorative vertical structural lines ── */}
+      <div className="pointer-events-none fixed py-10 inset-y-0 left-[5%] md:left-[8%] w-[1px] bg-aot-border/30 z-0" />
+      <div className="pointer-events-none fixed py-10 inset-y-0 right-[5%] md:right-[8%] w-[1px] bg-aot-border/30 z-0" />
 
       {/* ═══ Main Content ═══ */}
       <div className="relative z-10 min-h-screen flex flex-col">
         <Navbar />
 
-        {/* ── Hero Section ── */}
-        <motion.section
-          className="relative overflow-hidden aot-border-b bg-bg-secondary/80 backdrop-blur-sm"
+        {/* ── 1. Hero Parallax Section ── */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: appLoaded ? 1 : 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <HeroParallax />
+        </motion.div>
+
+        {/* ── Section Divider ── */}
+        <div className="section-divider" />
+
+        {/* ── 2. PICK UP Carousel Section ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
         >
-          {/* Blood splatter glow — top right */}
-          <div
-            className="absolute -top-32 -right-32 w-96 h-96 bg-blood-red rounded-full mix-blend-multiply opacity-20 xl:opacity-30 pointer-events-none"
-            style={{ filter: "blur(80px)" }}
-          />
-          {/* Survey Corps green glow — bottom left */}
-          <div
-            className="absolute -bottom-20 -left-20 w-64 h-64 bg-survey-green rounded-full opacity-10 pointer-events-none"
-            style={{ filter: "blur(60px)" }}
-          />
+          <PickUpCarousel />
+        </motion.div>
 
-          <div className="mx-auto max-w-7xl px-4 md:px-8 pb-12 pt-16 relative z-10 w-full">
+        {/* ── Section Divider ── */}
+        <div className="section-divider" />
+
+        {/* ── 3. MOVIE GALLERY Timeline Section ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <MovieGalleryTimeline />
+        </motion.div>
+
+        {/* ── Section Divider ── */}
+        <div className="section-divider" />
+
+        {/* ── 4. Animation Gallery Carousel Section ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <AnimationGalleryComponent />
+        </motion.div>
+
+        {/* ── Section Divider ── */}
+        <div className="section-divider" />
+
+        {/* ══════════════════════════════════════════════════════════════════
+            5. User Gallery Section (Existing Functionality — Restyled)
+           ══════════════════════════════════════════════════════════════════ */}
+        <motion.section
+          id="gallery"
+          className="relative overflow-hidden bg-aot-parchment"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Section Header */}
+          <div className="mx-auto max-w-7xl px-4 md:px-8 pb-8 pt-16 relative z-10 w-full">
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 lg:gap-8">
               <div>
                 <motion.div
                   className="flex items-center gap-4 mb-2"
                   initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.2 }}
                 >
-                  <div className="h-[2px] w-8 md:w-12 bg-survey-green" />
-                  <span className="text-[10px] md:text-xs font-bold tracking-widest text-survey-green-bright">
-                    PROJECT FILE 01
+                  <div className="h-[1px] w-8 md:w-12 bg-aot-blood" />
+                  <span className="text-mono-xs text-aot-blood">
+                    ARCHIVES — PROJECT FILE
                   </span>
                 </motion.div>
 
                 <motion.h2
-                  className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tighter text-text-primary uppercase leading-[0.9] md:leading-none"
-                  style={{ fontFamily: "var(--font-cinzel)" }}
+                  className="heading-brutal heading-brutal-lg"
                   initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.3 }}
                 >
-                  MOVIE GALLERY
+                  YOUR GALLERY
                 </motion.h2>
               </div>
 
@@ -414,26 +332,30 @@ export default function GalleryPage() {
               <motion.div
                 className="flex items-center justify-between lg:justify-end w-full lg:w-auto gap-4 md:gap-6"
                 initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
               >
                 <div className="text-left md:text-right flex-shrink-0">
-                  <p className="text-[10px] md:text-xs font-bold text-text-muted uppercase tracking-widest">
+                  <p className="text-mono-xs text-text-muted">
                     Total Records
                   </p>
-                  <p className="text-xl md:text-2xl font-light text-parchment font-serif leading-none">
+                  <p
+                    className="text-xl md:text-2xl font-light text-aot-dark leading-none mt-1"
+                    style={{ fontFamily: "var(--font-cinzel)" }}
+                  >
                     {images.length.toString().padStart(3, "0")}
                   </p>
                 </div>
 
                 <button
                   onClick={() => setShowUpload(!showUpload)}
-                  className="group relative flex items-center justify-center overflow-hidden aot-border bg-bg-card px-4 md:px-8 py-3 md:py-4 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-colors w-full sm:w-40 md:w-48 h-12 md:h-14 odm-trigger"
+                  className="group relative flex items-center justify-center overflow-hidden aot-border bg-aot-parchment px-4 md:px-8 py-3 md:py-4 text-mono-xs transition-colors w-full sm:w-40 md:w-48 h-12 md:h-14 odm-trigger"
                 >
-                  {/* Hover fill — Survey Corps green */}
-                  <span className="absolute inset-0 bg-survey-green transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
+                  {/* Hover fill — blood red */}
+                  <span className="absolute inset-0 bg-aot-blood transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
 
-                  <span className="relative z-10 flex items-center gap-2 text-text-primary">
+                  <span className="relative z-10 flex items-center gap-2 text-aot-dark group-hover:text-white transition-colors">
                     {showUpload ? "✕ CLOSE" : "+ APPEND DATA"}
                   </span>
                 </button>
@@ -461,22 +383,22 @@ export default function GalleryPage() {
         <div className="mx-auto flex flex-col md:flex-row max-w-7xl items-start md:items-center justify-between px-4 md:px-8 py-6 md:py-8 relative z-10 w-full gap-4 md:gap-6">
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             {/* Event Filter */}
-            <div className="flex aot-border bg-bg-card w-full sm:w-auto relative group">
-              <span className="px-3 md:px-4 py-2.5 text-[9px] md:text-[10px] font-bold uppercase border-r border-[#3a3830] bg-survey-green text-text-primary flex items-center text-nowrap tracking-widest">
+            <div className="flex aot-border bg-aot-parchment w-full sm:w-auto relative group">
+              <span className="px-3 md:px-4 py-2.5 text-mono-xs border-r border-aot-border bg-aot-blood text-white flex items-center text-nowrap">
                 Event
               </span>
               <select
-                className="bg-transparent px-3 py-2 text-[10px] uppercase font-bold text-text-primary focus:outline-none cursor-pointer w-full"
+                className="bg-transparent px-3 py-2 text-[10px] uppercase font-bold text-aot-dark focus:outline-none cursor-pointer w-full"
                 value={selectedEvent || ""}
                 onChange={(e) =>
                   setSelectedEvent(e.target.value || null)
                 }
               >
-                <option value="" className="bg-[#15171e]">
+                <option value="" className="bg-aot-parchment">
                   ALL EVENTS
                 </option>
                 {availableEvents.map((ev) => (
-                  <option key={ev} value={ev} className="bg-[#15171e]">
+                  <option key={ev} value={ev} className="bg-aot-parchment">
                     {ev}
                   </option>
                 ))}
@@ -484,12 +406,12 @@ export default function GalleryPage() {
             </div>
 
             {/* Faction/Label Filter */}
-            <div className="flex aot-border bg-bg-card w-full sm:w-auto relative group">
-              <span className="px-3 md:px-4 py-2.5 text-[9px] md:text-[10px] font-bold uppercase border-r border-[#3a3830] bg-survey-green text-text-primary flex items-center text-nowrap tracking-widest">
+            <div className="flex aot-border bg-aot-parchment w-full sm:w-auto relative group">
+              <span className="px-3 md:px-4 py-2.5 text-mono-xs border-r border-aot-border bg-aot-blood text-white flex items-center text-nowrap">
                 Faction
               </span>
               <select
-                className="bg-transparent px-3 py-2 text-[10px] uppercase font-bold text-text-primary focus:outline-none cursor-pointer w-full"
+                className="bg-transparent px-3 py-2 text-[10px] uppercase font-bold text-aot-dark focus:outline-none cursor-pointer w-full"
                 value={selectedLabel || ""}
                 onChange={(e) =>
                   setSelectedLabel(
@@ -497,12 +419,12 @@ export default function GalleryPage() {
                   )
                 }
               >
-                <option value="" className="bg-[#15171e]">
+                <option value="" className="bg-aot-parchment">
                   ALL FACTIONS
                 </option>
                 {(Object.keys(INSIGNIA_CONFIG) as InsigniaType[]).map(
                   (key) => (
-                    <option key={key} value={key} className="bg-[#15171e]">
+                    <option key={key} value={key} className="bg-aot-parchment">
                       {INSIGNIA_CONFIG[key].label}
                     </option>
                   )
@@ -527,10 +449,10 @@ export default function GalleryPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              className="aot-border p-2 md:p-4 bg-bg-card/80 backdrop-blur-sm shadow-xl relative overflow-hidden"
+              className="aot-border p-2 md:p-4 bg-aot-parchment shadow-sm relative overflow-hidden"
             >
-              {/* Internal Survey Corps green rim frame */}
-              <div className="absolute inset-0 border-[3px] border-survey-green opacity-[0.06] pointer-events-none z-20 m-1" />
+              {/* Blood-red inner rim accent */}
+              <div className="absolute inset-0 border-[2px] border-aot-blood opacity-[0.04] pointer-events-none z-20 m-1" />
 
               {renderGallery()}
             </motion.div>
@@ -538,12 +460,15 @@ export default function GalleryPage() {
 
           {/* Empty state */}
           {filteredImages.length === 0 && (
-            <div className="flex min-h-[500px] flex-col items-center justify-center text-center aot-border bg-bg-card/90 mt-4 backdrop-blur-sm">
-              <div className="mb-4 text-survey-green opacity-20">
-                <FactionCrest type="survey" size={80} />
+            <div className="flex min-h-[500px] flex-col items-center justify-center text-center aot-border bg-aot-parchment mt-4">
+              {/* Decorative crosshair */}
+              <div className="mb-6 relative w-16 h-16 opacity-20">
+                <div className="absolute top-1/2 left-0 w-full h-[1px] bg-aot-dark -translate-y-1/2" />
+                <div className="absolute left-1/2 top-0 w-[1px] h-full bg-aot-dark -translate-x-1/2" />
+                <div className="absolute inset-2 border border-aot-dark rounded-full" />
               </div>
               <h3
-                className="mb-2 text-2xl font-bold tracking-widest text-text-primary uppercase"
+                className="mb-2 text-2xl font-bold tracking-widest text-aot-dark uppercase"
                 style={{ fontFamily: "var(--font-cinzel)" }}
               >
                 NO DATA FOUND
@@ -556,10 +481,40 @@ export default function GalleryPage() {
           )}
         </section>
 
-        {/* ── Footer accent ── */}
-        <div className="relative z-10 aot-border-b">
-          <div className="h-1 w-full bg-gradient-to-r from-transparent via-survey-green/30 to-transparent" />
-        </div>
+        {/* ═══ Footer ═══ */}
+        <footer className="relative z-10 border-t border-aot-border bg-aot-dark text-white">
+          {/* Blood-red accent line */}
+          <div className="h-[2px] w-full bg-gradient-to-r from-aot-blood via-aot-blood-bright to-aot-blood" />
+
+          <div className="mx-auto max-w-7xl px-4 md:px-8 py-12 md:py-16">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+              {/* Brand */}
+              <div>
+                <h2
+                  className="text-2xl md:text-3xl font-black tracking-tighter text-white"
+                  style={{ fontFamily: "var(--font-cinzel)" }}
+                >
+                  進撃の巨人
+                </h2>
+                <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mt-1">
+                  KHPC Archives Portal
+                </p>
+              </div>
+
+              {/* Links */}
+              <div className="flex items-center gap-6 md:gap-8 text-[11px] font-medium tracking-[0.1em] uppercase text-white/50">
+                <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-white transition-colors">Terms</a>
+                <a href="#" className="hover:text-white transition-colors">Contact</a>
+              </div>
+
+              {/* Copyright */}
+              <p className="text-[10px] text-white/30 tracking-wider">
+                © 2026 KHPC Archives. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </footer>
       </div>
 
       {/* ═══ Lightbox / Selected Image ═══ */}
@@ -576,29 +531,29 @@ export default function GalleryPage() {
             <div
               className="fixed inset-0"
               style={{
-                background: "#0a0b10",
+                background: "#151515",
                 backgroundImage:
                   "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E\")",
               }}
             />
 
             {/* Blood red accent bars */}
-            <div className="fixed top-0 left-0 w-32 md:w-64 h-1 md:h-1 bg-gradient-to-r from-blood-red to-transparent" />
-            <div className="fixed bottom-0 right-0 w-32 md:w-64 h-1 md:h-1 bg-gradient-to-l from-blood-red to-transparent" />
+            <div className="fixed top-0 left-0 w-32 md:w-64 h-[2px] bg-gradient-to-r from-aot-blood to-transparent" />
+            <div className="fixed bottom-0 right-0 w-32 md:w-64 h-[2px] bg-gradient-to-l from-aot-blood to-transparent" />
 
-            {/* Survey Corps green accent lines */}
-            <div className="fixed top-0 right-0 h-32 md:h-64 w-1 bg-gradient-to-b from-survey-green/60 to-transparent" />
-            <div className="fixed bottom-0 left-0 h-32 md:h-64 w-1 bg-gradient-to-t from-survey-green/60 to-transparent" />
+            {/* Thin structural lines */}
+            <div className="fixed top-0 right-0 h-32 md:h-64 w-[1px] bg-gradient-to-b from-aot-blood/60 to-transparent" />
+            <div className="fixed bottom-0 left-0 h-32 md:h-64 w-[1px] bg-gradient-to-t from-aot-blood/60 to-transparent" />
 
             {/* Close Button */}
             <button
-              className="fixed top-2 right-2 md:top-8 md:right-8 flex items-center gap-2 md:gap-3 text-text-primary hover:text-blood-bright transition-colors z-[110] group aot-border bg-bg-card p-2 md:p-3 shadow-lg odm-trigger"
+              className="fixed top-2 right-2 md:top-8 md:right-8 flex items-center gap-2 md:gap-3 text-white hover:text-aot-blood-bright transition-colors z-[110] group border border-white/20 bg-aot-dark p-2 md:p-3 shadow-lg odm-trigger"
               onClick={() => setSelectedImage(null)}
             >
               <span className="text-[10px] md:text-xs font-bold tracking-widest uppercase hidden sm:block">
                 Close
               </span>
-              <div className="h-8 w-8 flex items-center justify-center group-hover:text-blood-bright transition-colors">
+              <div className="h-8 w-8 flex items-center justify-center group-hover:text-aot-blood-bright transition-colors">
                 ✕
               </div>
             </button>
@@ -610,7 +565,7 @@ export default function GalleryPage() {
               transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="aot-border bg-bg-card p-2 shadow-2xl relative w-full flex justify-center mt-12 md:mt-0">
+              <div className="border border-white/10 bg-aot-dark p-2 shadow-2xl relative w-full flex justify-center mt-12 md:mt-0 crosshair-corners">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={selectedImage.url}
@@ -620,29 +575,29 @@ export default function GalleryPage() {
 
                 {/* Event Name Tag */}
                 {selectedImage.eventName && (
-                  <div className="absolute top-6 -left-3 bg-survey-green text-text-primary text-[9px] font-bold tracking-[0.2em] px-3 py-1.5 uppercase aot-border transform -rotate-2 shadow-lg z-20">
+                  <div className="absolute top-6 -left-3 bg-aot-blood text-white text-[9px] font-bold tracking-[0.2em] px-3 py-1.5 uppercase border border-aot-blood-bright transform -rotate-2 shadow-lg z-20">
                     {selectedImage.eventName}
                   </div>
                 )}
               </div>
 
-              {/* Caption — Parchment styled box */}
+              {/* Caption */}
               {selectedImage.caption && (
                 <motion.div
-                  className="mt-6 aot-border bg-bg-card w-full max-w-2xl relative overflow-hidden shadow-lg"
+                  className="mt-6 border border-white/10 bg-aot-dark w-full max-w-2xl relative overflow-hidden shadow-lg"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  {/* Survey Corps green accent line */}
-                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-survey-green" />
+                  {/* Blood-red accent line */}
+                  <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-aot-blood" />
 
                   <div className="px-6 py-5 md:px-8 flex flex-col sm:flex-row items-start gap-4">
-                    <div className="mt-1 text-[9px] font-black text-survey-green-bright uppercase tracking-[0.3em] shrink-0 border-b-2 border-survey-green pb-1">
+                    <div className="mt-1 text-[9px] font-black text-aot-blood-bright uppercase tracking-[0.3em] shrink-0 border-b-2 border-aot-blood pb-1">
                       LOG ENTRY
                     </div>
                     <p
-                      className="text-sm font-medium leading-relaxed text-parchment"
+                      className="text-sm font-medium leading-relaxed text-white/80"
                       style={{ fontFamily: "var(--font-cinzel)" }}
                     >
                       {selectedImage.caption}

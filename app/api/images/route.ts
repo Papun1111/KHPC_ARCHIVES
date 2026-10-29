@@ -22,11 +22,8 @@ export async function GET() {
 
     return NextResponse.json(images);
   } catch (error) {
-    console.error("Failed to fetch images:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch images" },
-      { status: 500 }
-    );
+    console.warn("Database unavailable, returning empty list:", (error as Error).message);
+    return NextResponse.json([]);
   }
 }
 
@@ -60,6 +57,7 @@ export async function POST(request: NextRequest) {
       const buffer = Buffer.from(bytes);
 
       // Upload the buffer to Cloudinary using a stream
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const uploadResult = await new Promise<any>((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {

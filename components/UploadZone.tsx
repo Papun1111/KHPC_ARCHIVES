@@ -12,7 +12,7 @@ interface UploadZoneProps {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// UploadZone — Dark Military Document Scanner Aesthetic
+// UploadZone — Brutalist Parchment Military Document Scanner
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function UploadZone({ onUpload }: UploadZoneProps) {
@@ -87,16 +87,16 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
   return (
     <div className="flex flex-col md:flex-row gap-6">
       {/* ── Documentation Log Form ── */}
-      <div className="flex-1 aot-border bg-bg-card p-6 space-y-5">
+      <div className="flex-1 aot-border bg-aot-parchment p-6 space-y-5 crosshair-corners">
         <h4
-          className="text-xl font-bold uppercase tracking-widest text-survey-green-bright mb-4"
+          className="text-xl font-bold uppercase tracking-widest text-aot-blood mb-4"
           style={{ fontFamily: "var(--font-cinzel)" }}
         >
           DOCUMENTATION LOG
         </h4>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-bold tracking-[0.2em] text-parchment-dark uppercase">
+          <label className="text-[10px] font-bold tracking-[0.2em] text-text-secondary uppercase">
             Operation / Event Name
           </label>
           <input
@@ -104,12 +104,12 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
             placeholder="e.g. Puri Trip, Shiganshina Operation..."
             value={eventName}
             onChange={(e) => setEventName(e.target.value)}
-            className="w-full aot-border bg-bg-elevated p-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-survey-green transition-colors"
+            className="w-full aot-border bg-white p-3 text-sm text-aot-dark placeholder:text-text-muted focus:outline-none focus:border-aot-blood transition-colors"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-bold tracking-[0.2em] text-parchment-dark uppercase">
+          <label className="text-[10px] font-bold tracking-[0.2em] text-text-secondary uppercase">
             Report Details (Caption)
           </label>
           <textarea
@@ -117,12 +117,12 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
             rows={3}
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
-            className="w-full aot-border bg-bg-elevated p-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-survey-green resize-none transition-colors"
+            className="w-full aot-border bg-white p-3 text-sm text-aot-dark placeholder:text-text-muted focus:outline-none focus:border-aot-blood resize-none transition-colors"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] font-bold tracking-[0.2em] text-parchment-dark uppercase block">
+          <label className="text-[10px] font-bold tracking-[0.2em] text-text-secondary uppercase block">
             Assign Factions
           </label>
           <div className="flex flex-wrap gap-2">
@@ -135,9 +135,9 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
                   onClick={() => toggleLabel(key)}
                   className="aot-border px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest transition-all duration-200 flex items-center gap-1.5 odm-trigger"
                   style={{
-                    backgroundColor: isActive ? config.color : "#15171e",
-                    color: isActive ? "#e8e6e1" : config.color,
-                    borderColor: isActive ? config.color : "#3a3830",
+                    backgroundColor: isActive ? config.color : "#edeade",
+                    color: isActive ? "#ffffff" : config.color,
+                    borderColor: isActive ? config.color : "#c8c8c4",
                   }}
                 >
                   <FactionCrest type={key} size={12} />
@@ -168,11 +168,11 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
         </AnimatePresence>
 
         <motion.div
-          className="relative h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer overflow-hidden bg-bg-elevated transition-all duration-300 group aot-scan-line"
+          className="relative h-full min-h-[300px] flex flex-col items-center justify-center cursor-pointer overflow-hidden bg-white transition-all duration-300 group aot-scan-line crosshair-corners"
           style={{
-            border: isDragOver ? "2px solid #3a5a40" : "1px solid #3a3830",
+            border: isDragOver ? "2px solid #8a0303" : "1px solid #c8c8c4",
             boxShadow: isDragOver
-              ? "inset 0 0 50px rgba(58, 90, 64, 0.15), 0 0 30px rgba(58, 90, 64, 0.1)"
+              ? "inset 0 0 50px rgba(138, 3, 3, 0.08), 0 0 20px rgba(138, 3, 3, 0.1)"
               : "none",
           }}
           onDrop={handleDrop}
@@ -185,7 +185,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
             {isDragOver && (
               <motion.div
                 className="absolute inset-0 pointer-events-none z-0"
-                style={{ background: "radial-gradient(ellipse at center, rgba(58, 90, 64, 0.1), transparent)" }}
+                style={{ background: "radial-gradient(ellipse at center, rgba(138, 3, 3, 0.08), transparent)" }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
@@ -209,7 +209,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
                 className="absolute inset-0 opacity-10 pointer-events-none z-0"
                 style={{
                   backgroundImage:
-                    "repeating-linear-gradient(-45deg, #3a5a40, #3a5a40 10px, transparent 10px, transparent 20px)",
+                    "repeating-linear-gradient(-45deg, #8a0303, #8a0303 10px, transparent 10px, transparent 20px)",
                   backgroundSize: "28px 28px",
                 }}
                 animate={{ backgroundPosition: ["0px 0px", "28px 28px"] }}
@@ -219,16 +219,16 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           </AnimatePresence>
 
           {/* Inner frame */}
-          <div className="absolute inset-1 border border-[#3a3830] opacity-30 pointer-events-none z-0" />
+          <div className="absolute inset-1 border border-[#c8c8c4] opacity-50 pointer-events-none z-0" />
 
           <div className="flex flex-col items-center justify-center px-6 py-16 relative z-10 w-full text-center">
             <motion.div
               className={`mb-6 h-12 w-12 flex items-center justify-center transition-colors duration-300 odm-trigger ${
                 isDragOver
-                  ? "bg-survey-green text-white"
-                  : "bg-bg-card text-text-secondary group-hover:bg-survey-green group-hover:text-white"
+                  ? "bg-aot-blood text-white"
+                  : "bg-aot-parchment text-aot-dark group-hover:bg-aot-blood group-hover:text-white"
               }`}
-              style={{ border: "1px solid #3a3830" }}
+              style={{ border: "1px solid #c8c8c4" }}
               animate={{
                 scale: isDragOver ? 1.2 : 1,
                 rotate: isDragOver ? 90 : 0,
@@ -239,13 +239,13 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
 
             {isUploading ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center w-full">
-                <p className="text-xs font-bold uppercase tracking-[0.3em] text-survey-green-bright">
+                <p className="text-xs font-bold uppercase tracking-[0.3em] text-aot-blood">
                   Transmitting Data...
                 </p>
-                <div className="mx-auto mt-4 h-[2px] w-1/2 bg-bg-secondary relative overflow-hidden">
+                <div className="mx-auto mt-4 h-[2px] w-1/2 bg-aot-parchment-dark relative overflow-hidden">
                   <motion.div
                     className="absolute top-0 left-0 bottom-0"
-                    style={{ background: "linear-gradient(90deg, #3a5a40, #4a7c59)" }}
+                    style={{ background: "linear-gradient(90deg, #8a0303, #c41e1e)" }}
                     initial={{ width: "0%" }}
                     animate={{ width: "100%" }}
                     transition={{ duration: 2, ease: "easeInOut" }}
@@ -256,7 +256,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
               <div>
                 <h4
                   className={`text-xl font-bold uppercase tracking-widest transition-colors ${
-                    isDragOver ? "text-survey-green-bright" : "text-text-primary"
+                    isDragOver ? "text-aot-blood" : "text-aot-dark"
                   }`}
                   style={{ fontFamily: "var(--font-cinzel)" }}
                 >
@@ -270,8 +270,8 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           </div>
 
           {/* Corner marks */}
-          <div className="absolute top-0 left-0 w-4 h-4 border-b border-r border-survey-green/30 pointer-events-none opacity-50 z-10" />
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-t border-l border-survey-green/30 pointer-events-none opacity-50 z-10" />
+          <div className="absolute top-0 left-0 w-4 h-4 border-b border-r border-aot-blood/30 pointer-events-none opacity-50 z-10" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 border-t border-l border-aot-blood/30 pointer-events-none opacity-50 z-10" />
         </motion.div>
       </div>
     </div>

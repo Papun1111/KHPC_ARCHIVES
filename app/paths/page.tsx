@@ -6,7 +6,6 @@ import { Navbar } from "@/components/Navbar";
 import { EmbersBackground } from "@/components/EmbersBackground";
 import type { ImageData } from "@/components/ImageCard";
 import { useRouter } from "next/navigation";
-import { DEMO_IMAGES } from "@/lib/constants";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // The Paths — Mind Map Page (Dark AoT Theme)

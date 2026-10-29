@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cinzel } from "next/font/google";
+import { Inter, Cinzel, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,16 +15,24 @@ const cinzel = Cinzel({
   display: "swap",
 });
 
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "KHPC Archives — Beyond the Walls",
+  title: "KHPC Archives — Attack on Titan Portal",
   description:
-    "A cinematic image archive and expedition log. Explore memories from beyond the Walls across the infinite paths of history.",
+    "A cinematic archive portal inspired by Attack on Titan. Explore the complete movie gallery, animation history, and expedition logs across all seasons.",
   keywords: [
     "KHPC Archives",
     "Attack on Titan",
-    "Gallery",
+    "Movie Gallery",
+    "Animation",
     "Survey Corps",
-    "The Paths",
+    "Portal",
   ],
 };
 
@@ -36,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${cinzel.variable} antialiased`}
+        className={`${inter.variable} ${cinzel.variable} ${jetbrainsMono.variable} antialiased`}
       >
         {children}
       </body>

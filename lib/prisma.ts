@@ -1,10 +1,13 @@
 import "dotenv/config";
+import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client";
 
 const connectionString = `${process.env.DATABASE_URL}`;
 
-const adapter = new PrismaPg({ connectionString });
+const pool = new Pool({ connectionString });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const adapter = new PrismaPg(pool as any);
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 

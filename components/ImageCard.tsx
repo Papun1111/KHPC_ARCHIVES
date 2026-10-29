@@ -27,7 +27,7 @@ interface ImageCardProps {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// ImageCard — Dark Fantasy AoT Theme
+// ImageCard — Brutalist Parchment Theme with Crosshair Corners
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function ImageCard({ image, style, onSelect }: ImageCardProps) {
@@ -43,7 +43,7 @@ export function ImageCard({ image, style, onSelect }: ImageCardProps) {
   return (
     <motion.div
       layoutId={`image-${image.id}`}
-      className="absolute cursor-pointer overflow-hidden group aot-border bg-bg-card"
+      className="absolute cursor-pointer overflow-hidden group aot-border bg-aot-parchment crosshair-corners"
       style={{
         ...style,
       }}
@@ -53,42 +53,46 @@ export function ImageCard({ image, style, onSelect }: ImageCardProps) {
       whileHover={{ zIndex: 10 }}
       transition={{ layout: { duration: 0.4, ease: "easeInOut" } }}
     >
-      {/* Container to restrict image scale without breaking layout */}
+      {/* Container */}
       <motion.div className="relative h-full w-full overflow-hidden">
-        {/* Dark noise overlay that fades on hover */}
-        <motion.div
-          className="absolute inset-0 z-10 pointer-events-none opacity-30 group-hover:opacity-0 transition-opacity duration-500"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
-            mixBlendMode: "overlay",
-          }}
-        />
-
         {/* The actual image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={image.url}
           alt={image.caption || "Gallery image"}
-          className="absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105 brightness-[0.85] group-hover:brightness-100"
+          className="absolute inset-0 h-full w-full object-cover transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
           loading="lazy"
         />
 
-        {/* ── Bottom dark gradient (always visible, stronger on hover) ── */}
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a0b10]/80 to-transparent opacity-60 group-hover:opacity-90 transition-opacity z-10 pointer-events-none" />
-
-        {/* ── Survey Corps green edge glow on hover ── */}
+        {/* ── Dark overlay on hover with + icon ── */}
         <AnimatePresence>
           {isHovered && (
             <motion.div
-              className="absolute inset-0 z-[5] pointer-events-none"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              style={{
-                boxShadow: "inset 0 0 30px rgba(58, 90, 64, 0.3)",
-              }}
-            />
+              transition={{ duration: 0.35 }}
+              className="absolute inset-0 bg-black/40 z-10 flex flex-col items-center justify-center"
+            >
+              {/* Plus icon */}
+              <div className="relative w-8 h-8 mb-3">
+                <div className="absolute top-1/2 left-0 w-full h-[1px] bg-white -translate-y-1/2" />
+                <div className="absolute left-1/2 top-0 w-[1px] h-full bg-white -translate-x-1/2" />
+              </div>
+
+              {/* Category text */}
+              {image.eventName && (
+                <motion.span
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="text-[10px] font-bold tracking-[0.2em] text-white/80 uppercase"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                >
+                  {image.eventName}
+                </motion.span>
+              )}
+            </motion.div>
           )}
         </AnimatePresence>
 
@@ -103,25 +107,12 @@ export function ImageCard({ image, style, onSelect }: ImageCardProps) {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div
-                className="flex h-10 w-10 items-center justify-center bg-blood-red text-white"
+                className="flex h-10 w-10 items-center justify-center bg-aot-blood text-white"
                 style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%)" }}
               >
                 <span className="absolute top-1.5 right-1.5 text-xs">★</span>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ── Dark gradient overlay on hover ── */}
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0 bg-[#0a0b10]/50 z-10"
-            />
           )}
         </AnimatePresence>
 
@@ -159,12 +150,12 @@ export function ImageCard({ image, style, onSelect }: ImageCardProps) {
               exit={{ opacity: 0, scaleY: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <div className="aot-border bg-bg-card/95 backdrop-blur-sm w-full relative overflow-hidden">
-                {/* Survey Corps green accent line */}
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-survey-green" />
+              <div className="aot-border bg-aot-parchment/95 backdrop-blur-sm w-full relative overflow-hidden">
+                {/* Blood-red accent line */}
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-aot-blood" />
                 <div className="p-3 pl-4">
                   <p
-                    className="text-[11px] leading-relaxed text-parchment font-medium"
+                    className="text-[11px] leading-relaxed text-aot-dark font-medium"
                     style={{
                       fontFamily: "var(--font-cinzel), serif",
                     }}
@@ -174,7 +165,7 @@ export function ImageCard({ image, style, onSelect }: ImageCardProps) {
                       <span
                         className="animate-typewriter-blink ml-1 inline-block"
                         style={{
-                          borderRight: "3px solid #3a5a40",
+                          borderRight: "3px solid #8a0303",
                           height: "1em",
                         }}
                       />
